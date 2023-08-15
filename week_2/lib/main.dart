@@ -203,6 +203,11 @@ class ScheduleCard extends StatelessWidget {
 
   const ScheduleCard({super.key, required this.schedules});
 
+  bool _isMine(String name) {
+    print("_isMine : $name return ${name == "SAMSE"}");
+    return name == "SAMSE";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -329,11 +334,17 @@ class ScheduleCard extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   right: 20.0),
                                               child: Text(
-                                                attendee ?? "",
-                                                style: const TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.black54,
-                                                ),
+                                                _isMine(attendee ?? "")
+                                                    ? "ME"
+                                                    : attendee ?? "",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.black54,
+                                                    fontWeight:
+                                                        _isMine(attendee ?? "")
+                                                            ? FontWeight.w600
+                                                            : FontWeight
+                                                                .normal),
                                               ),
                                             ),
                                         ],
