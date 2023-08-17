@@ -1,0 +1,4 @@
+#Thu Aug 17 12:27:53 KST 2023
+base.0=/Users/ntoworks/Projects/git/toonflix/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
