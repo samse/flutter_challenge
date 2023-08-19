@@ -23,37 +23,25 @@ class HomeScreen extends StatelessWidget {
           if (snapshot.hasData) {
             return Padding(
               padding: const EdgeInsets.only(left: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 80),
-                  const Text(
-                    "Popular Movies",
-                    style: TextStyle(
-                      fontSize: MovieTitleTextSize,
-                      fontWeight: FontWeight.w700,
-                    ),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 120),
+                      titleText("Popular Movies"),
+                      makePopularList(context, snapshot),
+                      const SizedBox(height: 20),
+                      titleText("Now in Cinemas"),
+                      makeNowPlayingList(context, snapshot),
+                      const SizedBox(height: 20),
+                      titleText("Coming soon"),
+                      makeComingSoonList(context, snapshot),
+                    ],
                   ),
-                  Expanded(child: makePopularList(snapshot)),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Now in Cinemas",
-                    style: TextStyle(
-                      fontSize: MovieTitleTextSize,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Expanded(child: makeNowPlayingList(snapshot)),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Coming soon",
-                    style: TextStyle(
-                      fontSize: MovieTitleTextSize,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Expanded(child: makeComingSoonList(snapshot)),
-                ],
+                ),
               ),
             );
           }
@@ -63,60 +51,82 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  ListView makePopularList(
+  Widget titleText(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: MovieTitleTextSize,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+
+  SizedBox makePopularList(BuildContext context,
       AsyncSnapshot<Map<String, List<MovieModel>>> snapshot) {
     print("makePopularList");
     List<MovieModel> movies = snapshot.data!["popular"]!;
     print("  movies : $movies");
 
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      scrollDirection: Axis.horizontal,
-      itemCount: movies.length,
-      itemBuilder: (context, index) {
-        var movie = movies[index];
-        return MovieCard(
-          type: MovieCardType.big,
-          movie: movie,
-        );
-      },
-      separatorBuilder: (context, index) => const SizedBox(width: 20),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 230,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        scrollDirection: Axis.horizontal,
+        itemCount: movies.length,
+        itemBuilder: (context, index) {
+          var movie = movies[index];
+          return MovieCard(
+            type: MovieCardType.big,
+            movie: movie,
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 20),
+      ),
     );
   }
 
-  ListView makeNowPlayingList(
+  Widget makeNowPlayingList(BuildContext context,
       AsyncSnapshot<Map<String, List<MovieModel>>> snapshot) {
     List<MovieModel> movies = snapshot.data!["nowPlaying"]!;
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      scrollDirection: Axis.horizontal,
-      itemCount: movies.length,
-      itemBuilder: (context, index) {
-        var movie = movies[index];
-        return MovieCard(
-          type: MovieCardType.small,
-          movie: movie,
-        );
-      },
-      separatorBuilder: (context, index) => const SizedBox(width: 20),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 230,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        scrollDirection: Axis.horizontal,
+        itemCount: movies.length,
+        itemBuilder: (context, index) {
+          var movie = movies[index];
+          return MovieCard(
+            type: MovieCardType.small,
+            movie: movie,
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 20),
+      ),
     );
   }
 
-  ListView makeComingSoonList(
+  Widget makeComingSoonList(BuildContext context,
       AsyncSnapshot<Map<String, List<MovieModel>>> snapshot) {
     List<MovieModel> movies = snapshot.data!["comingSoon"]!;
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      scrollDirection: Axis.horizontal,
-      itemCount: movies.length,
-      itemBuilder: (context, index) {
-        var movie = movies[index];
-        return MovieCard(
-          type: MovieCardType.small,
-          movie: movie,
-        );
-      },
-      separatorBuilder: (context, index) => const SizedBox(width: 20),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 250,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        scrollDirection: Axis.horizontal,
+        itemCount: movies.length,
+        itemBuilder: (context, index) {
+          var movie = movies[index];
+          return MovieCard(
+            type: MovieCardType.small,
+            movie: movie,
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 20),
+      ),
     );
   }
 
@@ -228,7 +238,8 @@ class _MovieCardState extends State<MovieCard> {
                 width: 160,
                 child: Text(
                   widget.movie.title,
-                  maxLines: 3,
+                  maxLines: 2,
+                  overflow: TextOverflow.fade,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: MovieDescTextSize,

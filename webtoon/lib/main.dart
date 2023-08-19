@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toonflix2/screens/test_screen.dart';
 import 'package:toonflix2/services/api_services.dart';
 
 import 'screens/home_screen.dart';
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const HomeScreen(),
+      // home: const TestScreen(),
     );
   }
 }
