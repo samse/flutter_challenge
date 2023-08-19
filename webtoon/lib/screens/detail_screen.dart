@@ -42,50 +42,151 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                     },
                   ),
                 ),
-                SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 60,
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: const Padding(
-                          padding: EdgeInsets.only(left: 20.0),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  color: Colors.black12,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 100,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 60,
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: const Padding(
+                            padding: EdgeInsets.only(left: 20.0),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.arrow_back,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  "Back to list",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 300,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                          child: Text(
+                            snapshot.data!.original_title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+
+                        /// 5 star
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 30.0),
                           child: Row(
                             children: [
                               Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
+                                Icons.star,
+                                color: (snapshot.data!.vote_average > 2.0)
+                                    ? Colors.yellow
+                                    : Colors.white30,
                               ),
-                              Text(
-                                "Back to list",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              Icon(
+                                Icons.star,
+                                color: (snapshot.data!.vote_average > 4.0)
+                                    ? Colors.yellow
+                                    : Colors.white30,
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: (snapshot.data!.vote_average > 6.0)
+                                    ? Colors.yellow
+                                    : Colors.white30,
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: (snapshot.data!.vote_average > 7.0)
+                                    ? Colors.yellow
+                                    : Colors.white30,
+                              ),
+                              Icon(
+                                Icons.star,
+                                color: (snapshot.data!.vote_average > 9.0)
+                                    ? Colors.yellow
+                                    : Colors.white30,
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 300,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: Text(
-                          snapshot.data!.original_title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w700,
+                        SizedBox(
+                          height: 20,
+                        ),
+                        const Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                          child: Text(
+                            "StoryLine",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w400,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10.0, // shadow blur
+                                  color: Colors.white, // shadow color
+                                  offset: Offset(2.0,
+                                      2.0), // how much shadow will be shown
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(horizontal: 30.0),
+                        //   child: Text(
+                        //     "${getGenreStr(snapshot.data!.genres)}",
+                        //   ),
+                        // ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                          child: Text(
+                            snapshot.data!.overview,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w400,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10.0, // shadow blur
+                                  color: Colors.white, // shadow color
+                                  offset: Offset(2.0,
+                                      2.0), // how much shadow will be shown
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Positioned(
@@ -99,12 +200,15 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                         color: Colors.yellow,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Text(
-                        "Buy ticket",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                      child: const Center(
+                        child: Text(
+                          "Buy ticket",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -118,6 +222,14 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
         },
       ),
     );
+  }
+
+  String getGenreStr(List<Map<String, dynamic>> genres) {
+    String result = "";
+    for (var genre in genres) {
+      result = "${result} ${genre["name"]}";
+    }
+    return result;
   }
 }
 
