@@ -64,14 +64,14 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                             child: Row(
                               children: [
                                 Icon(
-                                  Icons.arrow_back,
+                                  Icons.arrow_back_ios,
                                   color: Colors.white,
                                 ),
                                 Text(
                                   "Back to list",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 18,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -192,10 +192,11 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                 Positioned(
                   bottom: 40,
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.only(
+                        bottom: 20.0, left: 50.0, right: 50.0),
                     child: Container(
                       height: 80,
-                      width: MediaQuery.of(context).size.width - 40,
+                      width: MediaQuery.of(context).size.width - 100,
                       decoration: BoxDecoration(
                         color: Colors.yellow,
                         borderRadius: BorderRadius.circular(10),
@@ -217,7 +218,7 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
               ],
             );
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),
