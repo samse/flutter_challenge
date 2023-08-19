@@ -19,6 +19,18 @@ class DetailMovieScreen extends StatefulWidget {
 }
 
 class _DetailMovieScreenState extends State<DetailMovieScreen> {
+  bool _doAnim = true;
+  @override
+  void initState() {
+    Future.delayed(Duration(milliseconds: 500), () {
+      setState(() {
+        _doAnim = false;
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<MovieDetailModel> model =
@@ -33,13 +45,17 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  child: Image.network(
-                    "https://image.tmdb.org/t/p/w500/${snapshot.data!.poster_path}",
-                    fit: BoxFit.fitHeight,
-                    headers: const {
-                      "User-Agent":
-                          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-                    },
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 500),
+                    opacity: _doAnim ? 0.5 : 1.0,
+                    child: Image.network(
+                      "https://image.tmdb.org/t/p/w500/${snapshot.data!.poster_path}",
+                      fit: BoxFit.fitHeight,
+                      headers: const {
+                        "User-Agent":
+                            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+                      },
+                    ),
                   ),
                 ),
                 Container(
