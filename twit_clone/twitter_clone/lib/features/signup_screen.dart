@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
@@ -67,10 +68,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   bool _isFulledInputData() {
-    print("_isFulledInputData...");
-    print("  isNamedValid ${_isNameValid()}");
-    print("  _isEmailValid ${_isEmailValid()}");
-    print("  _isBirthValid ${_isBirthValid()}");
     return _isNameValid() && _isEmailValid() && _isBirthValid();
   }
 
@@ -168,6 +165,19 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         color: Colors.grey.shade400,
                       ),
                     ),
+                    suffixIcon: SizedBox(
+                      width: 20,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: FaIcon(
+                          FontAwesomeIcons.circleCheck,
+                          color: _isNameValid()
+                              ? Colors.green
+                              : Colors.transparent,
+                          size: Sizes.size20,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Gaps.v12,
@@ -187,15 +197,47 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         color: Colors.grey.shade400,
                       ),
                     ),
+                    suffixIcon: SizedBox(
+                      width: 20,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: FaIcon(
+                          FontAwesomeIcons.circleCheck,
+                          color: _isEmailValid()
+                              ? Colors.green
+                              : Colors.transparent,
+                          size: Sizes.size20,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Gaps.v24,
                 GestureDetector(
                   onTap: () => _showDatePicker(context),
-                  child: Container(
-                    width: size.width,
-                    child: Text(
-                        _birthDateStr == "" ? "Date of birth" : _birthDateStr),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 300,
+                        child: Text(_birthDateStr == ""
+                            ? "Date of birth"
+                            : _birthDateStr),
+                      ),
+                      SizedBox(
+                        width: 20,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: FaIcon(
+                            FontAwesomeIcons.circleCheck,
+                            color: _birthDateStr == ""
+                                ? Colors.transparent
+                                : Colors.green,
+                            size: Sizes.size20,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Gaps.v10,
@@ -228,11 +270,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                     "here",
                     ".",
                   ],
-                  defStyle: TextStyle(
+                  defStyle: const TextStyle(
                     color: Colors.black,
                     fontSize: Sizes.size18,
                   ),
-                  highlightStyle: TextStyle(color: Colors.lightBlueAccent)),
+                  highlightStyle:
+                      const TextStyle(color: Colors.lightBlueAccent)),
           ],
         ),
       ),
@@ -250,27 +293,24 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Widget buildSignUpButton(BuildContext context, Size size) {
-    return Container(
-      child: GestureDetector(
-        onTap: _onSignUp,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(30),
+    return GestureDetector(
+      onTap: _onSignUp,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(
+            10.0,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(
-              10.0,
-            ),
-            child: Text(
-              "Sign up",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color:
-                    _isFulledInputData() ? Colors.white : Colors.grey.shade100,
-                fontSize: Sizes.size20,
-                fontWeight: FontWeight.w700,
-              ),
+          child: Text(
+            "Sign up",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _isFulledInputData() ? Colors.white : Colors.grey.shade100,
+              fontSize: Sizes.size20,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ),

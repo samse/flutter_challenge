@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:switch_button/switch_button.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
 import 'package:twitter_clone/features/signup_screen.dart';
@@ -31,7 +30,11 @@ class _CustomizedExperienceScreenState
     print("arguments : ${_args ?? ""}");
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back),
+        leading: GestureDetector(
+            onTap: () {
+              context.pop();
+            },
+            child: const Icon(Icons.arrow_back)),
       ),
       body: Padding(
         padding: const EdgeInsets.only(
@@ -62,11 +65,11 @@ class _CustomizedExperienceScreenState
                   ),
                 ),
                 Gaps.v24,
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Row(
                     children: [
-                      Flexible(
+                      const Flexible(
                         flex: 4,
                         child: Text(
                           "Twitter uses this data to personalize your experience. This web browsing history will never be stored with your name, email, of phone number.",
@@ -104,44 +107,6 @@ class _CustomizedExperienceScreenState
                   highlightStyle:
                       const TextStyle(color: Colors.lightBlueAccent),
                 ),
-                // RichText(
-                //   text: const TextSpan(
-                //     text: "By signing up, you agree to our ",
-                //     style: TextStyle(
-                //       color: Colors.black,
-                //       fontSize: Sizes.size18,
-                //     ),
-                //     children: [
-                //       TextSpan(
-                //         text: "Terms, Privacy Policy",
-                //         style: TextStyle(color: Colors.lightBlueAccent),
-                //       ),
-                //       TextSpan(
-                //         text: ", and",
-                //         style: TextStyle(
-                //           color: Colors.black,
-                //           fontSize: Sizes.size18,
-                //         ),
-                //       ),
-                //       TextSpan(
-                //         text: "Cookie Use.",
-                //         style: TextStyle(color: Colors.lightBlueAccent),
-                //       ),
-                //       TextSpan(
-                //         text:
-                //             " Twitter may use your contact information, including your email address and phone number for purposes outlined in our Privacy Polycy. ",
-                //         style: TextStyle(
-                //           color: Colors.black,
-                //           fontSize: Sizes.size18,
-                //         ),
-                //       ),
-                //       TextSpan(
-                //         text: "Learn more",
-                //         style: TextStyle(color: Colors.lightBlueAccent),
-                //       ),
-                //     ],
-                //   ),
-                // ),
               ],
             ),
             Align(

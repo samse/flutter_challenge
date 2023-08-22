@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
+import 'package:twitter_clone/common/widget_builder.dart';
 import 'package:twitter_clone/features/signup_screen.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -56,6 +57,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      // Google
                       Container(
                         alignment: Alignment.bottomCenter,
                         height: 60,
@@ -78,6 +80,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         ),
                       ),
                       Gaps.v12,
+                      // Apple
                       Container(
                         alignment: Alignment.bottomCenter,
                         height: 60,
@@ -100,6 +103,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         ),
                       ),
                       Gaps.v12,
+                      // Divider
                       SizedBox(
                         height: 60,
                         child: Stack(
@@ -128,12 +132,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           ],
                         ),
                       ),
+                      // Create account
                       GestureDetector(
                         onTap: () {
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (context) {
-                          //   return const SignUpScreen();
-                          // }));
                           context.pushNamed(SignUpScreen.routeName);
                         },
                         child: Container(
@@ -158,51 +159,53 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       Gaps.v28,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        child: RichText(
-                          text: const TextSpan(
-                            text: "By signing up, You agree to our ",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: Sizes.size18,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: "Terms, Privacy Policy",
-                                style: TextStyle(color: Colors.lightBlueAccent),
-                              ),
-                              TextSpan(
-                                text: ", and",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: Sizes.size18,
-                                ),
-                              ),
-                              TextSpan(
-                                text: "Cookie Use.",
-                                style: TextStyle(color: Colors.lightBlueAccent),
-                              ),
-                            ],
+                        child: buildRichText(
+                          texts: [
+                            "By signing up, You agree to our ",
+                            "Terms, Privacy Policy",
+                            ", and ",
+                            "Cookie Use",
+                            ".",
+                          ],
+                          defStyle: const TextStyle(
+                            color: Colors.black,
+                            fontSize: Sizes.size18,
                           ),
+                          highlightStyle:
+                              const TextStyle(color: Colors.lightBlueAccent),
                         ),
                       ),
                       Gaps.v48,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        child: RichText(
-                          text: const TextSpan(
-                            text: "Have an account aleady? ",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: Sizes.size18,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: "Login",
-                                style: TextStyle(color: Colors.lightBlueAccent),
-                              ),
-                            ],
+                        child: buildRichText(
+                          texts: [
+                            "Have an account aleady?",
+                            " Login",
+                            ".",
+                          ],
+                          defStyle: const TextStyle(
+                            color: Colors.black,
+                            fontSize: Sizes.size18,
                           ),
+                          highlightStyle:
+                              const TextStyle(color: Colors.lightBlueAccent),
                         ),
+                        // child: RichText(
+                        //   text: const TextSpan(
+                        //     text: "Have an account aleady? ",
+                        //     style: TextStyle(
+                        //       color: Colors.black,
+                        //       fontSize: Sizes.size18,
+                        //     ),
+                        //     children: [
+                        //       TextSpan(
+                        //         text: "Login",
+                        //         style: TextStyle(color: Colors.lightBlueAccent),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ),
                       Gaps.v12,
                     ],
