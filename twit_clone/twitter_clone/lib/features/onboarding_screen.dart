@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
+import 'package:twitter_clone/features/signup_screen.dart';
 
 class OnBoardingScreen extends StatefulWidget {
+  static const routeURL = "/";
+  static const routeName = "onboard";
+
   const OnBoardingScreen({super.key});
 
   @override
@@ -47,7 +52,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Container(
-                  height: 400,
+                  height: 420,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -96,7 +101,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       ),
                       Gaps.v12,
                       SizedBox(
-                        height: 40,
+                        height: 60,
                         child: Stack(
                           children: [
                             const Center(
@@ -123,20 +128,29 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           ],
                         ),
                       ),
-                      Container(
-                        alignment: Alignment.bottomCenter,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.black,
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "Create Account",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: Sizes.size18,
-                              fontWeight: FontWeight.w700,
+                      GestureDetector(
+                        onTap: () {
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (context) {
+                          //   return const SignUpScreen();
+                          // }));
+                          context.pushNamed(SignUpScreen.routeName);
+                        },
+                        child: Container(
+                          alignment: Alignment.bottomCenter,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.black,
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Create Account",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: Sizes.size18,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
@@ -145,22 +159,25 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: RichText(
-                          text: TextSpan(
+                          text: const TextSpan(
                             text: "By signing up, You agree to our ",
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.black,
                               fontSize: Sizes.size18,
                             ),
                             children: [
-                              const TextSpan(
+                              TextSpan(
                                 text: "Terms, Privacy Policy",
                                 style: TextStyle(color: Colors.lightBlueAccent),
                               ),
                               TextSpan(
                                 text: ", and",
-                                style: DefaultTextStyle.of(context).style,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: Sizes.size18,
+                                ),
                               ),
-                              const TextSpan(
+                              TextSpan(
                                 text: "Cookie Use.",
                                 style: TextStyle(color: Colors.lightBlueAccent),
                               ),
@@ -172,10 +189,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: RichText(
-                          text: TextSpan(
+                          text: const TextSpan(
                             text: "Have an account aleady? ",
-                            style: DefaultTextStyle.of(context).style,
-                            children: const [
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: Sizes.size18,
+                            ),
+                            children: [
                               TextSpan(
                                 text: "Login",
                                 style: TextStyle(color: Colors.lightBlueAccent),
