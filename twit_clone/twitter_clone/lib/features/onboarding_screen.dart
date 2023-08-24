@@ -6,6 +6,7 @@ import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
 import 'package:twitter_clone/common/widget_builder.dart';
 import 'package:twitter_clone/features/signup_screen.dart';
+import 'package:twitter_clone/app.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   static const routeURL = "/";
@@ -26,26 +27,23 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           padding: const EdgeInsets.only(left: 40.0, right: 40.0),
           child: Stack(
             children: [
-              const Column(
+              Column(
                 children: [
                   Gaps.v32,
-                  Center(
+                  const Center(
                     child: FaIcon(
                       FontAwesomeIcons.twitter,
                       color: Colors.lightBlueAccent,
                       size: 30,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 120,
                   ),
                   Center(
                     child: Text(
                       "See what's happening \nin the world right now",
-                      style: TextStyle(
-                        fontSize: Sizes.size28,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: context.ultraTitle,
                     ),
                   ),
                 ],

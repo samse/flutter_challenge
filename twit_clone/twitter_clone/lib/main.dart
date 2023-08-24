@@ -23,8 +23,28 @@ class MyApp extends ConsumerWidget {
       routerConfig: ref.watch(routerProvider),
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          primary: Color(0xFF52A2D8),
+          seedColor: Colors.deepPurple,
+        ),
         useMaterial3: true,
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(
+              fontSize: 26,
+              fontFamily: "NanumGothicExtraBold",
+              fontWeight: FontWeight.w700),
+          titleMedium:
+              TextStyle(fontSize: 22, fontFamily: "NanumGothicExtraBold"),
+          titleSmall:
+              TextStyle(fontSize: 18, fontFamily: "NanumGothicExtraBold"),
+          bodyMedium: TextStyle(fontSize: 14),
+          headlineLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+          headlineMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+          headlineSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w200),
+          displayLarge: TextStyle(fontSize: 24),
+          displayMedium: TextStyle(fontSize: 16),
+          displaySmall: TextStyle(fontSize: 12),
+        ),
       ),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

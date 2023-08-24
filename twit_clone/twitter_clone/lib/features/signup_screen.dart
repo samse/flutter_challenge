@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
 import 'package:twitter_clone/features/customized_experience_screen.dart';
@@ -28,6 +29,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   String _email = "";
   DateTime? _birthDate;
   String _birthDateStr = "";
+  late bool _isShowDatePicker = true;
 
   @override
   void initState() {
@@ -44,27 +46,10 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     super.initState();
   }
 
-  void _showDatePicker(BuildContext context) {
-    CupertinoRoundedDatePicker.show(
-      context,
-      fontFamily: "Mali",
-      locale: const Locale("en", "US"),
-      textColor: Colors.black,
-      background: Colors.white,
-      borderRadius: 0,
-      minimumYear: 1950,
-      maximumYear: 2013,
-      initialDate: DateTime(2013),
-      initialDatePickerMode: CupertinoDatePickerMode.date,
-      constraints: const BoxConstraints.expand(height: 300),
-      onDateTimeChanged: (newDateTime) {
-        print("new date time: $newDateTime");
-        _birthDate = newDateTime;
-        _birthDateStr =
-            "${newDateTime.year}년 ${newDateTime.month}월 ${newDateTime.day}일";
-        setState(() {});
-      },
-    );
+  void _toggleDatePicker(BuildContext context) {
+    setState(() {
+      _isShowDatePicker = !_isShowDatePicker;
+    });
   }
 
   bool _isFulledInputData() {
@@ -122,6 +107,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         leadingWidth: 120,
         leading: GestureDetector(
           onTap: () => _onCancel(context),
@@ -141,6 +128,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Gaps.v40,
                 const Text(
                   "Create your account",
                   style: TextStyle(
@@ -152,7 +140,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 TextField(
                   controller: _nameController,
                   autocorrect: false,
-                  style: const TextStyle(color: Colors.blue),
+                  style: context.hintText,
                   decoration: InputDecoration(
                     hintText: "Name",
                     enabledBorder: UnderlineInputBorder(
@@ -185,6 +173,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   controller: _emailController,
                   autocorrect: false,
                   keyboardType: TextInputType.emailAddress,
+                  style: context.hintText,
                   decoration: InputDecoration(
                     hintText: "Phone number of Email address",
                     enabledBorder: UnderlineInputBorder(
@@ -214,15 +203,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
                 Gaps.v24,
                 GestureDetector(
-                  onTap: () => _showDatePicker(context),
+                  onTap: () => _toggleDatePicker(context),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
                         width: 300,
-                        child: Text(_birthDateStr == ""
-                            ? "Date of birth"
-                            : _birthDateStr),
+                        child: Text(
+                            _birthDateStr == ""
+                                ? "Date of birth"
+                                : _birthDateStr,
+                            style: context.hintText
+                                .copyWith(color: Colors.black54)),
                       ),
                       SizedBox(
                         width: 20,
@@ -280,14 +272,40 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ),
       ),
       bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: _args!.isNotEmpty
-              ? const EdgeInsets.all(20.0)
-              : const EdgeInsets.only(right: 20.0),
-          child: _args!.isNotEmpty
-              ? buildSignUpButton(context, size)
-              : buildNextButton(context, size),
-        ),
+        child: _args!.isNotEmpty
+            ? buildSignUpButton(context, size)
+            : buildDatePicker(context),
+        //: buildNextButton(context, size),
+      ),
+    );
+  }
+
+  Widget buildDatePicker(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return SizedBox(
+      height: _isShowDatePicker ? (200 + 62) : 62,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          buildNextButton(context, size),
+          Container(
+            height: 1,
+            color: Colors.black12,
+          ),
+          if (_isShowDatePicker)
+            SizedBox(
+              height: 200,
+              child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  onDateTimeChanged: (newDateTime) {
+                    print("new date time: $newDateTime");
+                    _birthDate = newDateTime;
+                    _birthDateStr =
+                        "${newDateTime.year}년 ${newDateTime.month}월 ${newDateTime.day}일";
+                    setState(() {});
+                  }),
+            ),
+        ],
       ),
     );
   }
@@ -295,22 +313,26 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   Widget buildSignUpButton(BuildContext context, Size size) {
     return GestureDetector(
       onTap: _onSignUp,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(
-            10.0,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(30),
           ),
-          child: Text(
-            "Sign up",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: _isFulledInputData() ? Colors.white : Colors.grey.shade100,
-              fontSize: Sizes.size20,
-              fontWeight: FontWeight.w700,
+          child: Padding(
+            padding: const EdgeInsets.all(
+              10.0,
+            ),
+            child: Text(
+              "Sign up",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color:
+                    _isFulledInputData() ? Colors.white : Colors.grey.shade100,
+                fontSize: Sizes.size20,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),
@@ -319,29 +341,33 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Widget buildNextButton(BuildContext context, Size size) {
-    return Container(
-      height: 60,
-      width: size.width,
-      alignment: Alignment.centerRight,
-      child: GestureDetector(
-        onTap: _onNext,
-        child: Container(
-          decoration: BoxDecoration(
-            color: _isFulledInputData() ? Colors.black : Colors.grey,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 20.0,
-              right: 20.0,
-              top: 10.0,
-              bottom: 10.0,
+    return Padding(
+      padding: const EdgeInsets.only(right: 20.0),
+      child: Container(
+        height: 60,
+        width: size.width,
+        alignment: Alignment.centerRight,
+        child: GestureDetector(
+          onTap: _onNext,
+          child: Container(
+            decoration: BoxDecoration(
+              color: _isFulledInputData() ? Colors.black : Colors.grey,
+              borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(
-              "Next",
-              style: TextStyle(
-                color:
-                    _isFulledInputData() ? Colors.white : Colors.grey.shade100,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 20.0,
+                right: 20.0,
+                top: 10.0,
+                bottom: 10.0,
+              ),
+              child: Text(
+                "Next",
+                style: TextStyle(
+                  color: _isFulledInputData()
+                      ? Colors.white
+                      : Colors.grey.shade100,
+                ),
               ),
             ),
           ),
