@@ -7,9 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
-import 'package:twitter_clone/features/customized_experience_screen.dart';
+import 'package:twitter_clone/features/authentication/customized_experience_screen.dart';
+import 'package:twitter_clone/features/authentication/pincode_verify_screen.dart';
 
-import '../common/widget_builder.dart';
+import '../../common/widget_builder.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   static const routeURL = "/signUp";
@@ -29,7 +30,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   String _email = "";
   DateTime? _birthDate;
   String _birthDateStr = "";
-  late bool _isShowDatePicker = true;
+  late bool _isShowDatePicker = false;
 
   @override
   void initState() {
@@ -90,7 +91,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         queryParameters: _param);
   }
 
-  void _onSignUp() {}
+  void _onSignUp() {
+    final _param = {
+      "name": _name,
+      "email": _email,
+      "birthDate": "${_birthDate?.millisecondsSinceEpoch ?? "0"}",
+      "birthDateStr": _birthDateStr
+    };
+    print("onNext: $_param");
+    context.pushNamed(PinCodeVerifyScreen.routeName, queryParameters: _param);
+  }
 
   @override
   Widget build(BuildContext context) {

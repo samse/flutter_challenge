@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:twitter_clone/features/customized_experience_screen.dart';
-import 'package:twitter_clone/features/onboarding_screen.dart';
+import 'package:twitter_clone/features/authentication/customized_experience_screen.dart';
+import 'package:twitter_clone/features/authentication/onboarding_screen.dart';
 import 'package:twitter_clone/router.dart';
 
-import 'features/signup_screen.dart';
+import 'features/authentication/signup_screen.dart';
 
 void main() {
   runApp(ProviderScope(

@@ -1,9 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:twitter_clone/features/customized_experience_screen.dart';
-import 'package:twitter_clone/features/onboarding_screen.dart';
+import 'package:twitter_clone/features/authentication/customized_experience_screen.dart';
+import 'package:twitter_clone/features/authentication/interest_screen.dart';
+import 'package:twitter_clone/features/authentication/onboarding_screen.dart';
+import 'package:twitter_clone/features/authentication/password_screen.dart';
+import 'package:twitter_clone/features/authentication/pincode_verify_screen.dart';
 
-import 'features/signup_screen.dart';
+import 'features/authentication/signup_screen.dart';
 
 final routerProvider = Provider((ref) {
   return GoRouter(initialLocation: "/", routes: [
@@ -21,6 +24,21 @@ final routerProvider = Provider((ref) {
       name: CustomizedExperienceScreen.routeName,
       path: CustomizedExperienceScreen.routeURL,
       builder: (context, state) => const CustomizedExperienceScreen(),
+    ),
+    GoRoute(
+      name: PinCodeVerifyScreen.routeName,
+      path: PinCodeVerifyScreen.routeURL,
+      builder: (context, state) => const PinCodeVerifyScreen(),
+    ),
+    GoRoute(
+      name: PasswordScreen.routeName,
+      path: PasswordScreen.routeURL,
+      builder: (context, state) => const PasswordScreen(),
+    ),
+    GoRoute(
+      name: InterestsScreen.routeName,
+      path: InterestsScreen.routeURL,
+      builder: (context, state) => const InterestsScreen(),
     ),
   ]);
 });

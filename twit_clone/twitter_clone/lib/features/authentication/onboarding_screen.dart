@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
 import 'package:twitter_clone/common/widget_builder.dart';
-import 'package:twitter_clone/features/signup_screen.dart';
+import 'package:twitter_clone/features/authentication/signup_screen.dart';
 import 'package:twitter_clone/app.dart';
 
 class OnBoardingScreen extends StatefulWidget {

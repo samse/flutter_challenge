@@ -17,6 +17,9 @@ extension ThemeExtension on BuildContext {
       textTheme.headlineMedium!.copyWith(fontWeight: FontWeight.w600);
   // 입력필드 힌트
   TextStyle get hintText => textTheme.headlineMedium!;
+
+  TextStyle get pincodeText => pageTitle!;
+
   // 일반
   TextStyle get normal => textTheme.displayMedium!;
 }
