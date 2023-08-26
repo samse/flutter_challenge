@@ -19,7 +19,7 @@ extension ThemeExtension on BuildContext {
   TextStyle get hintText => textTheme.headlineMedium!;
 
   TextStyle get pincodeText => pageTitle!;
-  TextStyle get cardText => pageSubtitle!.copyWith(fontWeight: FontWeight.w600);
+  TextStyle get cardText => pageSubtitle!.copyWith(fontWeight: FontWeight.w500);
 
   // 일반
   TextStyle get normal => textTheme.displayMedium!;

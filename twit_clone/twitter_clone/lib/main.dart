@@ -38,8 +38,8 @@ class MyApp extends ConsumerWidget {
           titleSmall:
               TextStyle(fontSize: 18, fontFamily: "NanumGothicExtraBold"),
           bodyMedium: TextStyle(fontSize: 14),
-          headlineLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-          headlineMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+          headlineLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          headlineMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
           headlineSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w200),
           displayLarge: TextStyle(fontSize: 24),
           displayMedium: TextStyle(fontSize: 16),

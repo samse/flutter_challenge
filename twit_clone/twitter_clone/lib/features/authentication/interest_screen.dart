@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,9 +18,17 @@ class InterestsScreen extends StatefulWidget {
   State<InterestsScreen> createState() => _InterestsScreenState();
 }
 
+enum InterestsScreenMode {
+  interestSelect, // 관심사 선택 모드
+  detailSelect, // 세부관심사 선택 모드
+}
+
 class _InterestsScreenState extends State<InterestsScreen> {
   List<String> _list = [];
   List<bool> _selectedList = [];
+  List<String> _selectedInterests = [];
+  Map<String, bool> _selectedDetailInterests = {};
+  InterestsScreenMode _interestsMode = InterestsScreenMode.interestSelect;
 
   void _onTapItem(BuildContext context, int i) {
     setState(() {
@@ -26,7 +36,18 @@ class _InterestsScreenState extends State<InterestsScreen> {
     });
   }
 
-  void _onNext() {}
+  void _onNext() {
+    _selectedInterests = [];
+    print("_list length: ${_list.length}");
+    for (var i = 0; i < _list.length; i++) {
+      if (_selectedList[i] == true) {
+        _selectedInterests.add(_list[i]);
+      }
+    }
+    setState(() {
+      _interestsMode = InterestsScreenMode.detailSelect;
+    });
+  }
 
   bool _isSelectedItem() {
     return true;
@@ -34,8 +55,6 @@ class _InterestsScreenState extends State<InterestsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final list = interestItems.entries.map((e) => e.key).toList();
-
     interestItems.entries.forEach((e) {
       _list.add(e.key);
       _selectedList.add(false);
@@ -44,31 +63,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 60,
-              width: MediaQuery.of(context).size.width,
-              child: Stack(
-                children: [
-                  Container(
-                    height: 1,
-                    color: Colors.black26,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Great work"),
-                        buildNextButton(context, MediaQuery.of(context).size)
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
+          buildBottomBar(context),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -77,6 +72,7 @@ class _InterestsScreenState extends State<InterestsScreen> {
                   child: FaIcon(
                 FontAwesomeIcons.twitter,
                 color: Colors.blue,
+                size: Sizes.size28,
               )),
               Gaps.v32,
               Padding(
@@ -95,70 +91,618 @@ class _InterestsScreenState extends State<InterestsScreen> {
                 ),
               ),
               Gaps.v24,
-              Container(
-                height: 1,
-                color: Colors.grey,
-                clipBehavior: Clip.none,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height - 350,
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  padding: const EdgeInsets.all(20),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 2.5,
-                  children: [
-                    for (var i = 0; i < _list.length; i++)
-                      GestureDetector(
-                        onTap: () => _onTapItem(context, i),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Container(
-                              height: 60,
-                              padding: const EdgeInsets.only(
-                                  left: 10.0, bottom: 5.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: _selectedList[i]
-                                    ? Colors.blue
-                                    : Colors.white,
-                                border: Border.all(
-                                    width: 1,
-                                    color: _selectedList[i]
-                                        ? Colors.blue
-                                        : Colors.black38),
-                              ),
-                              child: Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Text(
-                                  _list[i],
-                                  style: context.cardText,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding:
-                                  const EdgeInsets.only(right: 10, top: 10),
-                              height: 60,
-                              child: const Align(
-                                alignment: Alignment.topRight,
-                                child: Icon(
-                                  Icons.check_circle,
-                                  color: Colors.white,
-                                  size: Sizes.size20,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
+              Container(height: 1, color: Colors.grey, clipBehavior: Clip.none),
+              Expanded(
+                //height: MediaQuery.of(context).size.height - 300,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 60.0),
+                  child: _interestsMode == InterestsScreenMode.interestSelect
+                      ? buildInterestsGrid(context)
+                      : buildDetailInterestsGrid(context),
                 ),
               )
             ],
           )
+        ],
+      ),
+    );
+  }
+
+  Widget buildInterestsGrid(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 2,
+      padding: const EdgeInsets.all(20),
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 2.5,
+      children: [
+        for (var i = 0; i < _list.length; i++)
+          GestureDetector(
+            onTap: () => _onTapItem(context, i),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Container(
+                  height: 60,
+                  padding: const EdgeInsets.only(left: 10.0, bottom: 5.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: _selectedList[i] ? Colors.blue : Colors.white,
+                    border: Border.all(
+                        width: 1,
+                        color: _selectedList[i] ? Colors.blue : Colors.black38),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      _list[i],
+                      style: context.cardText.copyWith(
+                          color:
+                              _selectedList[i] ? Colors.white : Colors.black87),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(right: 10, top: 10),
+                  height: 60,
+                  child: const Align(
+                    alignment: Alignment.topRight,
+                    child: Icon(
+                      Icons.check_circle,
+                      color: Colors.white,
+                      size: Sizes.size20,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget buildSubItem(
+      {required BuildContext context,
+      required String interest,
+      required String text}) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: GestureDetector(
+        onTap: () {
+          toggleSelectedDetailInterest("$interest-$text");
+        },
+        child: Container(
+          // key: Key("$interest-$text"),
+          padding: const EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+                color: getSelectedDetailInterest("$interest-$text")
+                    ? Colors.blue
+                    : Colors.black38),
+            color: getSelectedDetailInterest("$interest-$text")
+                ? Colors.blue
+                : Colors.white,
+          ),
+          child: Text(
+            text,
+            style: context.cardText.copyWith(
+                color: getSelectedDetailInterest("$interest-$text")
+                    ? Colors.white
+                    : Colors.black),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildSubItemRow(
+      {required BuildContext context,
+      required String interest,
+      required List<String> subItems,
+      required int index}) {
+    return Row(
+      children: [
+        Gaps.h10,
+        for (var i = index; i < min(subItems.length, index + 4); i++)
+          buildSubItem(context: context, interest: interest, text: subItems[i]),
+      ],
+    );
+  }
+
+  Widget buildSubDetailView(BuildContext context, String interest) {
+    List<String> subItems = interestItems[interest]!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Gaps.v36,
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: Text(
+            interest,
+            style: context.textTheme.headlineLarge,
+          ),
+        ),
+        Gaps.v28,
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var i = 0; i < subItems.length; i = i + 4)
+                  buildSubItemRow(
+                      context: context,
+                      interest: interest,
+                      subItems: subItems,
+                      index: i),
+
+                // Row(
+                //   children: [
+                //     Gaps.h20,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //   ],
+                // ),
+                // Gaps.v10,
+                // Row(
+                //   children: [
+                //     Gaps.h20,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //   ],
+                // ),
+                // Gaps.v10,
+                // Row(
+                //   children: [
+                //     Gaps.h20,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //     Container(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(10.0),
+                //         child: Text("aaaaaaa"),
+                //       ),
+                //       decoration: BoxDecoration(
+                //           borderRadius: BorderRadius.circular(20),
+                //           border: Border.all(color: Colors.black38)),
+                //     ),
+                //     Gaps.h12,
+                //   ],
+                // ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildDetailInterestsGrid(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (var e in _selectedInterests) buildSubDetailView(context, e),
+          // Gaps.v36,
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 20.0),
+          //   child: Text(
+          //     "Music",
+          //     style: context.textTheme.headlineLarge,
+          //   ),
+          // ),
+          // Gaps.v28,
+          // SizedBox(
+          //   width: MediaQuery.of(context).size.width,
+          //   child: SingleChildScrollView(
+          //     scrollDirection: Axis.horizontal,
+          //     child: Column(
+          //       children: [
+          //         Row(
+          //           children: [
+          //             Gaps.h20,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //           ],
+          //         ),
+          //         Gaps.v10,
+          //         Row(
+          //           children: [
+          //             Gaps.h20,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //           ],
+          //         ),
+          //         Gaps.v10,
+          //         Row(
+          //           children: [
+          //             Gaps.h20,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //           ],
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          // Gaps.v36,
+          // Padding(
+          //   padding: const EdgeInsets.only(left: 20.0),
+          //   child: Text(
+          //     "Music",
+          //     style: context.textTheme.headlineLarge,
+          //   ),
+          // ),
+          // Gaps.v28,
+          // SizedBox(
+          //   width: MediaQuery.of(context).size.width,
+          //   child: SingleChildScrollView(
+          //     scrollDirection: Axis.horizontal,
+          //     child: Column(
+          //       children: [
+          //         Row(
+          //           children: [
+          //             Gaps.h20,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //           ],
+          //         ),
+          //         Gaps.v10,
+          //         Row(
+          //           children: [
+          //             Gaps.h20,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //           ],
+          //         ),
+          //         Gaps.v10,
+          //         Row(
+          //           children: [
+          //             Gaps.h20,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //             Container(
+          //               child: Padding(
+          //                 padding: const EdgeInsets.all(10.0),
+          //                 child: Text("aaaaaaa"),
+          //               ),
+          //               decoration: BoxDecoration(
+          //                   borderRadius: BorderRadius.circular(20),
+          //                   border: Border.all(color: Colors.black38)),
+          //             ),
+          //             Gaps.h12,
+          //           ],
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -193,5 +737,48 @@ class _InterestsScreenState extends State<InterestsScreen> {
         ),
       ),
     );
+  }
+
+  buildBottomBar(BuildContext context) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 60,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          children: [
+            Container(
+              height: 1,
+              color: Colors.black26,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Great work ✌"),
+                  buildNextButton(context, MediaQuery.of(context).size)
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void toggleSelectedDetailInterest(String key) {
+    setState(() {
+      _selectedDetailInterests[key] = !getSelectedDetailInterest(key);
+    });
+  }
+
+  void setSelectedDetailInterest(String key, bool selected) {
+    _selectedDetailInterests[key] = selected;
+  }
+
+  bool getSelectedDetailInterest(String key) {
+    if (_selectedDetailInterests[key] == null) return false;
+    return _selectedDetailInterests[key] ?? false;
   }
 }
