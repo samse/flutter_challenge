@@ -21,6 +21,14 @@ extension ThemeExtension on BuildContext {
   TextStyle get pincodeText => pageTitle!;
   TextStyle get cardText => pageSubtitle!.copyWith(fontWeight: FontWeight.w500);
 
+  TextStyle get navText =>
+      textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w300);
+
+  TextStyle get postTitleText =>
+      textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w800);
+
+  TextStyle get linkText => textTheme.headlineSmall!
+      .copyWith(color: Colors.blue, fontWeight: FontWeight.w600);
   // 일반
   TextStyle get normal => textTheme.displayMedium!;
 }

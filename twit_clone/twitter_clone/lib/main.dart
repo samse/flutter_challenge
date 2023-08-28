@@ -8,8 +8,8 @@ import 'package:twitter_clone/router.dart';
 import 'features/authentication/signup_screen.dart';
 
 void main() {
-  runApp(ProviderScope(
-    child: const MyApp(),
+  runApp(const ProviderScope(
+    child: MyApp(),
   ));
 }
 

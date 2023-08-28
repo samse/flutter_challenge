@@ -5,11 +5,12 @@ import 'package:twitter_clone/features/authentication/interest_screen.dart';
 import 'package:twitter_clone/features/authentication/onboarding_screen.dart';
 import 'package:twitter_clone/features/authentication/password_screen.dart';
 import 'package:twitter_clone/features/authentication/pincode_verify_screen.dart';
+import 'package:twitter_clone/features/home/home_screen.dart';
 
 import 'features/authentication/signup_screen.dart';
 
 final routerProvider = Provider((ref) {
-  return GoRouter(initialLocation: "/", routes: [
+  return GoRouter(initialLocation: "/home", routes: [
     GoRoute(
       name: OnBoardingScreen.routeName,
       path: OnBoardingScreen.routeURL,
@@ -39,6 +40,11 @@ final routerProvider = Provider((ref) {
       name: InterestsScreen.routeName,
       path: InterestsScreen.routeURL,
       builder: (context, state) => const InterestsScreen(),
+    ),
+    GoRoute(
+      name: HomeScreen.routeName,
+      path: HomeScreen.routeURL,
+      builder: (context, state) => const HomeScreen(),
     ),
   ]);
 });
