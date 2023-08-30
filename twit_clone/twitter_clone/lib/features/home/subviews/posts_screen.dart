@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/features/home/viewmodels/posts_view_model.dart';
@@ -119,7 +120,10 @@ class _PostViewState extends State<PostView> {
                           children: [
                             Text(widget.post.hours),
                             Gaps.h10,
-                            FaIcon(FontAwesomeIcons.ellipsis)
+                            GestureDetector(
+                                onTap: () =>
+                                    _onTapPostItem(context, widget.post),
+                                child: const FaIcon(FontAwesomeIcons.ellipsis))
                           ],
                         )
                       ],
@@ -344,4 +348,180 @@ class _PostViewState extends State<PostView> {
       throw "열수 없는 url입니다.";
     }
   }
+
+  void _onTapMenu(int index) {
+    print("_onTapMenu - $index");
+  }
+
+  void _onTap2ndMenu(int index) {
+    print("_onTap2ndMenu - $index");
+
+    final reportReasons = [
+      "Why are you reporting this thread?",
+      "Your report is anonymous, except if you're reporting an  intelelctual property infringement. If someone is in immediate danger, call the local emergency services - dont't wait.",
+      "I just don't like it",
+      "It's unlawful content under NetsDG",
+      "It's spam",
+      "Hate speech or symbole",
+      "Nudity or Sexual activity",
+      "Implecitly criminal",
+      "It's make me angry"
+    ];
+
+    if (index == 1) {
+      Size size = MediaQuery.of(context).size;
+      Navigator.of(context).pop();
+      Future.delayed(
+          Duration.zero,
+          () => showModalBottomSheet(
+              backgroundColor: Colors.white,
+              context: context,
+              showDragHandle: true,
+              useSafeArea: true,
+              constraints: const BoxConstraints(minHeight: 500),
+              builder: (context) {
+                return Scaffold(
+                  backgroundColor: Colors.white,
+                  appBar: AppBar(
+                    title: Text(
+                      "Report",
+                      style: context.buttonTitle,
+                    ),
+                    automaticallyImplyLeading: false,
+                    bottom: PreferredSize(
+                      preferredSize: Size(size.width, 1),
+                      child: Container(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  body: ListView.separated(
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Text("Why are you reporting this thread?",
+                                style: context.pageTitle),
+                          );
+                        } else if (index == 1) {
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                    "Your report is anonymous, except if you're reporting an  intelelctual property infringement. If someone is in immediate danger, call the local emergency services - dont't wait.",
+                                    style: context.pageSubtitle),
+                                Gaps.v20,
+                                context.divider(context)
+                              ],
+                            ),
+                          );
+                        } else {
+                          return Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: SizedBox(
+                              width: size.width,
+                              height: 60,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    reportReasons[index],
+                                    style: context.textTheme.headlineMedium,
+                                  ),
+                                  const Icon(
+                                    Icons.keyboard_arrow_right,
+                                    size: 20,
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      // separatorBuilder: (context, index) => Gaps.v1,
+                      separatorBuilder: (context, index) {
+                        return (index < 1) ? Gaps.v1 : context.divider(context);
+                      },
+                      itemCount: reportReasons.length),
+                );
+              }));
+    }
+  }
+
+  void _onTapPostItem(BuildContext context, Post post) {
+    showModalBottomSheet(
+        context: context,
+        showDragHandle: true,
+        useSafeArea: true,
+        builder: (context) {
+          return Container(
+            height: 380,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                children: [
+                  twoBlockMenu(
+                      context: context,
+                      height: 140,
+                      menus: ['Unfollow', 'Mute'],
+                      onTapMenu: (index) => _onTapMenu(index)),
+                  Gaps.v16,
+                  twoBlockMenu(
+                      context: context,
+                      height: 140,
+                      menus: ['Hide', 'Report'],
+                      menuColors: [Colors.black, Colors.red],
+                      onTapMenu: (index) => _onTap2ndMenu(index)),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+}
+
+Widget twoBlockMenu(
+    {required BuildContext context,
+    required int height,
+    required List<String> menus,
+    required Function(int) onTapMenu,
+    List<Color>? menuColors}) {
+  final boxDecoration = BoxDecoration(
+      borderRadius: BorderRadius.circular(10), color: Colors.grey.shade300);
+  return Container(
+    height: 140,
+    width: MediaQuery.of(context).size.width,
+    decoration: boxDecoration,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () => onTapMenu(0), //print("____onTapMenu(0)"),
+          child: Text("    ${menus[0]}",
+              style: menuColors != null
+                  ? context.buttonTitle.copyWith(color: menuColors[0])
+                  : context.buttonTitle),
+        ),
+        Container(
+          height: 1,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.grey.shade400.withOpacity(0.5),
+        ),
+        GestureDetector(
+          onTap: () => onTapMenu(1),
+          child: Text("    ${menus[1]}",
+              style: menuColors != null
+                  ? context.buttonTitle.copyWith(color: menuColors[1])
+                  : context.buttonTitle),
+        ),
+      ],
+    ),
+  );
 }

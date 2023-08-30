@@ -31,4 +31,9 @@ extension ThemeExtension on BuildContext {
       .copyWith(color: Colors.blue, fontWeight: FontWeight.w600);
   // 일반
   TextStyle get normal => textTheme.displayMedium!;
+
+  Container divider(BuildContext context) => Container(
+      width: MediaQuery.of(context).size.width,
+      height: 1,
+      color: Colors.grey.shade300);
 }
