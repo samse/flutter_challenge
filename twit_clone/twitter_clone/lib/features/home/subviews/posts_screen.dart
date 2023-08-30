@@ -378,24 +378,12 @@ class _PostViewState extends State<PostView> {
               context: context,
               showDragHandle: true,
               useSafeArea: true,
-              constraints: const BoxConstraints(minHeight: 500),
+              isScrollControlled: true,
               builder: (context) {
-                return Scaffold(
-                  backgroundColor: Colors.white,
-                  appBar: AppBar(
-                    title: Text(
-                      "Report",
-                      style: context.buttonTitle,
-                    ),
-                    automaticallyImplyLeading: false,
-                    bottom: PreferredSize(
-                      preferredSize: Size(size.width, 1),
-                      child: Container(
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  body: ListView.separated(
+                return SizedBox(
+                  width: size.width,
+                  height: size.height * 0.6,
+                  child: ListView.separated(
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return Padding(
@@ -460,7 +448,7 @@ class _PostViewState extends State<PostView> {
         useSafeArea: true,
         builder: (context) {
           return Container(
-            height: 380,
+            height: 320,
             width: MediaQuery.of(context).size.width,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
