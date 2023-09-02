@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:twitter_clone/common/nav_item.dart';
 import 'package:twitter_clone/features/home/subviews/posts_screen.dart';
+import 'package:twitter_clone/features/search/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeURL = "/home";
@@ -13,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   void _onTap(int index) {
     setState(() {
@@ -24,9 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-      ),
       body: Stack(
         children: [
           Offstage(
@@ -35,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Offstage(
             offstage: _selectedIndex == 1 ? false : true,
-            child: Center(child: Container(child: Text("2"))),
+            child: const SearchScreen(),
           ),
           Offstage(
             offstage: _selectedIndex == 2 ? false : true,

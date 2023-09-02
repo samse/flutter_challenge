@@ -32,6 +32,19 @@ extension ThemeExtension on BuildContext {
   // 일반
   TextStyle get normal => textTheme.displayMedium!;
 
+  TextStyle get searchTitleText => textTheme.headlineMedium!.copyWith(
+        color: Colors.black,
+        fontWeight: FontWeight.w500,
+      );
+  TextStyle get searchSubTitleText => textTheme.headlineMedium!.copyWith(
+        color: Colors.grey,
+        fontWeight: FontWeight.w500,
+      );
+  TextStyle get searchFollowersText => textTheme.headlineMedium!.copyWith(
+        color: Colors.black,
+        fontWeight: FontWeight.w500,
+      );
+
   Container divider(BuildContext context) => Container(
       width: MediaQuery.of(context).size.width,
       height: 1,

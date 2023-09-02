@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../search/models/user.dart';
 import '../models/post.dart';
 
 class PostsViewModel extends AsyncNotifier<List<Post>> {
@@ -34,13 +35,13 @@ List<Post> mockDatas() {
     name: 'hangsung',
     profileUrl:
         'https://firebasestorage.googleapis.com/v0/b/nto-talk.appspot.com/o/avatars%2FZ0ORTzflj6f69BjO1OVO1Tx1xnf2?alt=media',
-    userId: '1',
+    userId: '2',
   );
   User user3 = User(
     name: 'yerin',
     profileUrl:
         'https://firebasestorage.googleapis.com/v0/b/nto-talk.appspot.com/o/avatars%2Foe6tky7rKsVchNPxJX8eihnC5o22?alt=media',
-    userId: '1',
+    userId: '3',
   );
   posts.add(Post(
     // 이미지 여러장인 컨텐츠
