@@ -1,9 +1,4 @@
-class User {
-  String name;
-  String profileUrl;
-  String userId;
-  User({required this.name, required this.profileUrl, required this.userId});
-}
+import '../../search/models/user.dart';
 
 class Post {
   String owner;

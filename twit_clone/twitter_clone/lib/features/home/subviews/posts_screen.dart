@@ -10,6 +10,7 @@ import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/viewmodels/posts_view_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../search/models/user.dart';
 import '../models/post.dart';
 
 class PostsScreen extends ConsumerStatefulWidget {
