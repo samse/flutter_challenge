@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/nav_item.dart';
+import 'package:twitter_clone/features/common/avatar.dart';
+import 'package:twitter_clone/features/home/models/post.dart';
 import 'package:twitter_clone/features/home/subviews/posts_screen.dart';
+
+import '../../common/sizes.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeURL = "/home";
@@ -14,18 +20,180 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  final user = User(
+    name: 'samse',
+    profileUrl:
+        'https://lh3.googleusercontent.com/a/AAcHTtcjRUI1oTPhL2dX2CJvgex4wnfnKzJtUMXNZTo8tDnjgOFF=s576-c-no',
+    userId: '1',
+  );
+  String text = "";
+  TextEditingController _commentController = TextEditingController();
+
+  @override
+  void initState() {
+    _commentController.addListener(() {
+      setState(() {
+        text = _commentController.text;
+      });
+      print("$text");
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
 
   void _onTap(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    // setState(() {
+    //   _selectedIndex = index;
+    // });
+  }
+
+  void _onTapPost(BuildContext context) {
+    print("_onTapPost text isEmpty => $text : ${text.isEmpty}");
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height - 60,
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Scaffold(
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: Text(
+                    "New thread",
+                    style: context.buttonTitle,
+                  ),
+                  leadingWidth: 100,
+                  leading: GestureDetector(
+                    onTap: () => context.pop(),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text(
+                          "Cancel",
+                          textAlign: TextAlign.start,
+                          style: context.textTheme.headlineMedium,
+                        ),
+                      ),
+                    ),
+                  ),
+                  elevation: 0.1,
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: SafeArea(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 60,
+                          child: Column(
+                            children: [
+                              Avatar(
+                                  profileUrl: user.profileUrl,
+                                  size: const Size(40, 40)),
+                              const SizedBox(
+                                  height: 80, child: VerticalDivider()),
+                              Avatar(
+                                profileUrl: user.profileUrl,
+                                size: const Size(20, 20),
+                                blured: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "  ${user.name}",
+                                style: context.cardText,
+                              ),
+                              TextField(
+                                textInputAction: TextInputAction.newline,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: 4,
+                                minLines: 1,
+                                controller: _commentController,
+                                decoration: const InputDecoration(
+                                  hintText: "Start a thread...",
+                                  hintStyle: TextStyle(
+                                      fontSize: Sizes.size18,
+                                      color: Colors.black45),
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  // contentPadding: EdgeInsets.symmetric(
+                                  //   horizontal: Sizes.size12,
+                                  // ),
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                              Transform.rotate(
+                                angle: 0.5,
+                                child: const Icon(
+                                  Icons.attach_file,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                bottomNavigationBar: SafeArea(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Anyone can reply",
+                          style: context.normal
+                              .copyWith(color: Colors.grey.shade600),
+                        ),
+                        Text(
+                          "Post",
+                          style: context.linkText!.copyWith(
+                            fontSize: Sizes.size20,
+                            color: text.isEmpty
+                                ? Colors.blue.shade200
+                                : Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        // title: Text("Home"),
+        centerTitle: true,
+        title: Transform.rotate(
+          angle: 1.5,
+          child: FaIcon(
+            FontAwesomeIcons.at,
+            size: Sizes.size40,
+          ),
+        ),
       ),
       body: Stack(
         children: [
@@ -51,50 +219,52 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        height: 60,
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              NavItem(
-                icon: FaIcon(
-                  FontAwesomeIcons.house,
-                  color: _selectedIndex == 0 ? Colors.black : Colors.black26,
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          height: 60,
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                NavItem(
+                  icon: FaIcon(
+                    FontAwesomeIcons.house,
+                    color: _selectedIndex == 0 ? Colors.black : Colors.black26,
+                  ),
+                  onTap: () => _onTap(0),
                 ),
-                onTap: () => _onTap(0),
-              ),
-              NavItem(
-                icon: FaIcon(
-                  FontAwesomeIcons.magnifyingGlass,
-                  color: _selectedIndex == 1 ? Colors.black : Colors.black26,
+                NavItem(
+                  icon: FaIcon(
+                    FontAwesomeIcons.magnifyingGlass,
+                    color: _selectedIndex == 1 ? Colors.black : Colors.black26,
+                  ),
+                  onTap: () => _onTap(1),
                 ),
-                onTap: () => _onTap(1),
-              ),
-              NavItem(
-                icon: FaIcon(
-                  FontAwesomeIcons.penToSquare,
-                  color: _selectedIndex == 2 ? Colors.black : Colors.black26,
+                NavItem(
+                  icon: FaIcon(
+                    FontAwesomeIcons.penToSquare,
+                    color: _selectedIndex == 2 ? Colors.black : Colors.black26,
+                  ),
+                  onTap: () => _onTapPost(context),
                 ),
-                onTap: () => _onTap(2),
-              ),
-              NavItem(
-                icon: FaIcon(
-                  FontAwesomeIcons.heart,
-                  color: _selectedIndex == 3 ? Colors.black : Colors.black26,
+                NavItem(
+                  icon: FaIcon(
+                    FontAwesomeIcons.heart,
+                    color: _selectedIndex == 3 ? Colors.black : Colors.black26,
+                  ),
+                  onTap: () => _onTap(3),
                 ),
-                onTap: () => _onTap(3),
-              ),
-              NavItem(
-                icon: FaIcon(
-                  FontAwesomeIcons.user,
-                  color: _selectedIndex == 4 ? Colors.black : Colors.black26,
+                NavItem(
+                  icon: FaIcon(
+                    FontAwesomeIcons.user,
+                    color: _selectedIndex == 4 ? Colors.black : Colors.black26,
+                  ),
+                  onTap: () => _onTap(4),
                 ),
-                onTap: () => _onTap(4),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
