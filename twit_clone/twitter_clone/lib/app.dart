@@ -46,6 +46,9 @@ extension ThemeExtension on BuildContext {
         fontWeight: FontWeight.w500,
       );
 
+  TextStyle get settingItemText => textTheme.headlineMedium!
+      .copyWith(color: Colors.black, fontWeight: FontWeight.w500);
+
   Container divider(BuildContext context) => Container(
       width: MediaQuery.of(context).size.width,
       height: 1,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:html';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/features/home/models/post.dart';
@@ -7,10 +6,6 @@ import 'package:twitter_clone/features/search/models/user.dart';
 import 'package:twitter_clone/features/user_profile/models/thread.dart';
 
 class ThreadsViewModel extends AsyncNotifier<List<Thread>> {
-  // @override
-  // FutureOr<List<Thread>> build() {
-  //   return List.empty();
-  // }
   @override
   FutureOr<List<Thread>> build() {
     return fetchThreads();

@@ -6,8 +6,10 @@ import 'package:twitter_clone/features/authentication/onboarding_screen.dart';
 import 'package:twitter_clone/features/authentication/password_screen.dart';
 import 'package:twitter_clone/features/authentication/pincode_verify_screen.dart';
 import 'package:twitter_clone/features/home/home_screen.dart';
+import 'package:twitter_clone/features/settings/settings_screen.dart';
 
 import 'features/authentication/signup_screen.dart';
+import 'features/settings/subviews/privacy_screen.dart';
 
 final routerProvider = Provider((ref) {
   return GoRouter(initialLocation: "/home", routes: [
@@ -45,6 +47,16 @@ final routerProvider = Provider((ref) {
       name: HomeScreen.routeName,
       path: HomeScreen.routeURL,
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      name: SettingsScreen.routeName,
+      path: SettingsScreen.routeURL,
+      builder: (context, state) => SettingsScreen(),
+    ),
+    GoRoute(
+      name: PrivacyScreen.routeName,
+      path: PrivacyScreen.routeURL,
+      builder: (context, state) => PrivacyScreen(),
     ),
   ]);
 });

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/avatar.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/roundbutton.dart';
+import 'package:twitter_clone/features/settings/settings_screen.dart';
 import 'package:twitter_clone/features/user_profile/subviews/reply_view.dart';
 import 'package:twitter_clone/features/user_profile/subviews/thread_view.dart';
 
@@ -39,7 +41,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                     onTap: () {}, child: FaIcon(FontAwesomeIcons.instagram)),
                 Gaps.h10,
                 GestureDetector(
-                    onTap: () {}, child: FaIcon(FontAwesomeIcons.gripLines)),
+                    onTap: () => context.pushNamed(SettingsScreen.routeName),
+                    child: FaIcon(FontAwesomeIcons.gripLines)),
                 Gaps.h10,
               ],
             ),
