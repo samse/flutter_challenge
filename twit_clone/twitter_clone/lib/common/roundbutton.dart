@@ -4,10 +4,20 @@ import 'package:twitter_clone/common/sizes.dart';
 
 class RoundButton extends StatelessWidget {
   final String title;
-  const RoundButton({super.key, required this.title});
+  Size? size;
+  RoundButton({super.key, required this.title, this.size});
 
   @override
   Widget build(BuildContext context) {
+    return size != null
+        ? SizedBox(
+            width: size!.width,
+            height: size!.height,
+            child: makeButton(context))
+        : makeButton(context);
+  }
+
+  Widget makeButton(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),

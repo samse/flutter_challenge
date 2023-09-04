@@ -6,8 +6,11 @@ import 'package:twitter_clone/common/nav_item.dart';
 import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/models/post.dart';
 import 'package:twitter_clone/features/home/subviews/posts_screen.dart';
+import 'package:twitter_clone/features/user_profile/user_profile_screen.dart';
 
 import '../../common/sizes.dart';
+import '../search/models/user.dart';
+import '../search/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeURL = "/home";
@@ -19,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
   final user = User(
     name: 'samse',
     profileUrl:
@@ -47,9 +50,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onTap(int index) {
-    // setState(() {
-    //   _selectedIndex = index;
-    // });
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   void _onTapPost(BuildContext context) {
@@ -184,17 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // title: Text("Home"),
-        centerTitle: true,
-        title: Transform.rotate(
-          angle: 1.5,
-          child: FaIcon(
-            FontAwesomeIcons.at,
-            size: Sizes.size40,
-          ),
-        ),
-      ),
       body: Stack(
         children: [
           Offstage(
@@ -203,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Offstage(
             offstage: _selectedIndex == 1 ? false : true,
-            child: Center(child: Container(child: Text("2"))),
+            child: const SearchScreen(),
           ),
           Offstage(
             offstage: _selectedIndex == 2 ? false : true,
@@ -215,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Offstage(
             offstage: _selectedIndex == 4 ? false : true,
-            child: Center(child: Container(child: Text("5"))),
+            child: const UserProfileScreen(),
           ),
         ],
       ),

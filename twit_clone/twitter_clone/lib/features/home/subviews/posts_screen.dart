@@ -10,6 +10,7 @@ import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/viewmodels/posts_view_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../common/sizes.dart';
 import '../../search/models/user.dart';
 import '../models/post.dart';
 
@@ -39,6 +40,17 @@ class _PostsScreenState extends ConsumerState<PostsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        // title: Text("Home"),
+        centerTitle: true,
+        title: Transform.rotate(
+          angle: 1.5,
+          child: const FaIcon(
+            FontAwesomeIcons.at,
+            size: Sizes.size40,
+          ),
+        ),
+      ),
       body: _posts.isEmpty
           ? Center(child: CircularProgressIndicator())
           : buildPosts(context),
