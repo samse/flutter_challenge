@@ -8,6 +8,8 @@ import 'package:twitter_clone/common/roundbutton.dart';
 import 'package:twitter_clone/features/user_profile/subviews/reply_view.dart';
 import 'package:twitter_clone/features/user_profile/subviews/thread_view.dart';
 
+const headerHeight = 284.0;
+
 class UserProfileScreen extends ConsumerStatefulWidget {
   const UserProfileScreen({super.key});
 
@@ -30,7 +32,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
               floating: true,
               leading: GestureDetector(
                   onTap: () {},
-                  child: Center(child: FaIcon(FontAwesomeIcons.earthAsia))),
+                  child:
+                      const Center(child: FaIcon(FontAwesomeIcons.earthAsia))),
               actions: [
                 GestureDetector(
                     onTap: () {}, child: FaIcon(FontAwesomeIcons.instagram)),
@@ -42,12 +45,16 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
             ),
             // Text("asdfasf"),
             SliverPersistentHeader(delegate: TabBarDelegate()),
-            SliverFillRemaining(
+            const SliverFillRemaining(
               hasScrollBody: true,
               child: TabBarView(
                 children: [
-                  ThreadsView(),
-                  RepliesView(),
+                  ThreadsView(
+                    headerHeight: headerHeight,
+                  ),
+                  RepliesView(
+                    headerHeight: headerHeight,
+                  ),
                 ],
               ),
             )
@@ -183,10 +190,10 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 284;
+  double get maxExtent => headerHeight;
 
   @override
-  double get minExtent => 284;
+  double get minExtent => headerHeight;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {

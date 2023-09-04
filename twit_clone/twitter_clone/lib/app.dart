@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/common/sizes.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 extension ThemeExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
@@ -49,4 +50,13 @@ extension ThemeExtension on BuildContext {
       width: MediaQuery.of(context).size.width,
       height: 1,
       color: Colors.grey.shade300);
+
+  void launchURL(String url) async {
+    print("Url: $url");
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw "열수 없는 url입니다.";
+    }
+  }
 }
