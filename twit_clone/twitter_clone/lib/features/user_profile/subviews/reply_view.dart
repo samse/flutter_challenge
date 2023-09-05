@@ -72,76 +72,89 @@ class ReplyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 60,
-              height: _leftCellHeight,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  //buildAvatar(context, widget.post.profileUrl),
-                  Avatar(url: reply.user.profileUrl, hasPlusIcon: false),
-                  if (reply.post != null)
-                    Expanded(
-                      child: Container(
-                        width: 1,
-                        color: Colors.black54,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10.0),
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        // 드래그 방향에 따라 탭 전환
+        if (details.primaryVelocity! > 0) {
+          // 오른쪽으로 드래그
+          DefaultTabController.of(context)!.animateTo(0);
+        } else {
+          // 왼쪽으로 드래그
+          DefaultTabController.of(context)!.animateTo(1);
+        }
+      },
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: 60,
+                height: _leftCellHeight,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          reply.user.name,
-                          style: context.postTitleText,
+                    //buildAvatar(context, widget.post.profileUrl),
+                    Avatar(url: reply.user.profileUrl, hasPlusIcon: false),
+                    if (reply.post != null)
+                      Expanded(
+                        child: Container(
+                          width: 1,
+                          color: Colors.black54,
                         ),
-                        Row(
-                          children: [
-                            Text(reply.hour),
-                            Gaps.h10,
-                            GestureDetector(
-                                onTap: () {},
-                                child: const FaIcon(FontAwesomeIcons.ellipsis))
-                          ],
-                        )
-                      ],
-                    ),
-                    if (reply.comment!.isNotEmpty)
-                      Linkify(
-                        options: const LinkifyOptions(
-                            humanize: false, defaultToHttps: true),
-                        text: reply.comment,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        onOpen: (link) => context.launchURL(link.url),
-                        linkStyle: context.linkText,
                       ),
-                    if (reply.post != null) buildPost(context, reply.post!),
-                    buildBottomIcons(context),
                   ],
                 ),
               ),
-            )
-          ],
-        ),
-        if (reply.post == null)
-          Container(
-              height: 1,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.black12),
-      ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            reply.user.name,
+                            style: context.postTitleText,
+                          ),
+                          Row(
+                            children: [
+                              Text(reply.hour),
+                              Gaps.h10,
+                              GestureDetector(
+                                  onTap: () {},
+                                  child:
+                                      const FaIcon(FontAwesomeIcons.ellipsis))
+                            ],
+                          )
+                        ],
+                      ),
+                      if (reply.comment!.isNotEmpty)
+                        Linkify(
+                          options: const LinkifyOptions(
+                              humanize: false, defaultToHttps: true),
+                          text: reply.comment,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          onOpen: (link) => context.launchURL(link.url),
+                          linkStyle: context.linkText,
+                        ),
+                      if (reply.post != null) buildPost(context, reply.post!),
+                      buildBottomIcons(context),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+          if (reply.post == null)
+            Container(
+                height: 1,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.black12),
+        ],
+      ),
     );
   }
 

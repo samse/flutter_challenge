@@ -42,14 +42,26 @@ class _ThreadsViewState extends ConsumerState<ThreadsView> {
   }
 
   Widget buildThreads(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height - widget.headerHeight,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            for (var thread in _threads) ThreadView(thread: thread),
-          ],
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        // 드래그 방향에 따라 탭 전환
+        if (details.primaryVelocity! > 0) {
+          // 오른쪽으로 드래그
+          DefaultTabController.of(context)!.animateTo(0);
+        } else {
+          // 왼쪽으로 드래그
+          DefaultTabController.of(context)!.animateTo(1);
+        }
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height - widget.headerHeight,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              for (var thread in _threads) ThreadView(thread: thread),
+            ],
+          ),
         ),
       ),
     );
