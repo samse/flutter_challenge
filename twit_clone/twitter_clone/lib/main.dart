@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/features/authentication/customized_experience_screen.dart';
 import 'package:twitter_clone/features/authentication/onboarding_screen.dart';
 import 'package:twitter_clone/router.dart';

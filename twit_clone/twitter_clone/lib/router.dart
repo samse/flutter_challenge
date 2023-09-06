@@ -6,6 +6,7 @@ import 'package:twitter_clone/features/authentication/onboarding_screen.dart';
 import 'package:twitter_clone/features/authentication/password_screen.dart';
 import 'package:twitter_clone/features/authentication/pincode_verify_screen.dart';
 import 'package:twitter_clone/features/home/home_screen.dart';
+import 'package:twitter_clone/features/home/subviews/attach_file_screen.dart';
 import 'package:twitter_clone/features/settings/settings_screen.dart';
 
 import 'features/authentication/signup_screen.dart';
@@ -57,6 +58,11 @@ final routerProvider = Provider((ref) {
       name: PrivacyScreen.routeName,
       path: PrivacyScreen.routeURL,
       builder: (context, state) => PrivacyScreen(),
+    ),
+    GoRoute(
+      name: AttachFileScreen.routeName,
+      path: AttachFileScreen.routeURL,
+      builder: (context, state) => const AttachFileScreen(),
     ),
   ]);
 });

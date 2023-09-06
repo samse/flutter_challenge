@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +8,7 @@ import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/nav_item.dart';
 import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/models/post.dart';
+import 'package:twitter_clone/features/home/subviews/attach_file_screen.dart';
 import 'package:twitter_clone/features/home/subviews/posts_screen.dart';
 import 'package:twitter_clone/features/user_profile/user_profile_screen.dart';
 
@@ -38,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         text = _commentController.text;
       });
-      print("$text");
+      print("$text -> isEmpty ${text.isEmpty}");
     });
     super.initState();
   }
@@ -53,6 +57,18 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  late File? _attachFile = null;
+  // File 첨부
+  void _onTapFile(BuildContext context) async {
+    final XFile? file = await context.pushNamed(AttachFileScreen.routeName);
+    if (file != null) {
+      print(file.path);
+      setState(() {
+        _attachFile = File(file.path);
+      });
+    }
   }
 
   void _onTapPost(BuildContext context) {
@@ -117,9 +133,29 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "  ${user.name}",
-                                style: context.cardText,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "  ${user.name}",
+                                    style: context.cardText,
+                                  ),
+                                  if (text.isNotEmpty)
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _commentController.text = "";
+                                          });
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(right: 20.0),
+                                          child: Icon(
+                                            Icons.close,
+                                            size: Sizes.size20,
+                                          ),
+                                        ))
+                                ],
                               ),
                               TextField(
                                 textInputAction: TextInputAction.newline,
@@ -136,18 +172,59 @@ class _HomeScreenState extends State<HomeScreen> {
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                   ),
-                                  // contentPadding: EdgeInsets.symmetric(
-                                  //   horizontal: Sizes.size12,
-                                  // ),
                                   fillColor: Colors.white,
                                 ),
                               ),
-                              Transform.rotate(
-                                angle: 0.5,
-                                child: const Icon(
-                                  Icons.attach_file,
-                                ),
-                              ),
+                              _attachFile == null
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        _onTapFile(context);
+                                      },
+                                      child: Transform.rotate(
+                                        angle: 0.5,
+                                        child: const Icon(
+                                          Icons.attach_file,
+                                        ),
+                                      ),
+                                    )
+                                  : Stack(
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              80,
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                              border: Border.all(
+                                                  color: Colors.grey,
+                                                  width: 1)),
+                                          child: Image.file(
+                                            _attachFile!,
+                                            fit: BoxFit.fitWidth,
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 10,
+                                          right: 10,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _attachFile = null;
+                                              });
+                                            },
+                                            child: Transform.rotate(
+                                                angle: 0.5,
+                                                child: const Icon(
+                                                  Icons.add_circle,
+                                                  color: Colors.black38,
+                                                )),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                             ],
                           ),
                         )
