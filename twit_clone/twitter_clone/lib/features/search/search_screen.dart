@@ -84,7 +84,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           ),
                       ],
                     ),
-                    Expanded(
+                    const Expanded(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

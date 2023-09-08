@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:twitter_clone/common/nav_item.dart';
+import 'package:twitter_clone/features/activities/activities_screen.dart';
 import 'package:twitter_clone/features/home/subviews/posts_screen.dart';
 import 'package:twitter_clone/features/search/search_screen.dart';
 
@@ -14,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 3;
 
   void _onTap(int index) {
     setState(() {
@@ -41,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Offstage(
             offstage: _selectedIndex == 3 ? false : true,
-            child: Center(child: Container(child: Text("4"))),
+            child: const ActivitiesScreen(),
           ),
           Offstage(
             offstage: _selectedIndex == 4 ? false : true,

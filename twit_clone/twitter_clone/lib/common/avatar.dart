@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 class Avatar extends StatelessWidget {
   final String url;
   final bool hasPlusIcon;
+  Widget? iconWidget;
   double? size;
   Avatar({
     super.key,
     required this.url,
     required this.hasPlusIcon,
     this.size,
+    this.iconWidget,
   });
 
   @override
@@ -34,7 +36,7 @@ class Avatar extends StatelessWidget {
               },
             ),
           ),
-          if (hasPlusIcon)
+          if (hasPlusIcon || iconWidget != null)
             Positioned(
                 right: 0,
                 bottom: 0,
@@ -61,6 +63,18 @@ class Avatar extends StatelessWidget {
                     color: Colors.black,
                     size: 20,
                   ),
+                )),
+          if (iconWidget != null)
+            Positioned(
+                right: 2,
+                bottom: 2,
+                child: Container(
+                  width: 16,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: iconWidget!,
                 )),
         ],
       ),

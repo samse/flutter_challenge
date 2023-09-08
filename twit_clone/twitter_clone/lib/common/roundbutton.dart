@@ -15,7 +15,8 @@ class RoundButton extends StatelessWidget {
       child: Center(
         child: Text(
           title,
-          style: context.buttonTitle.copyWith(fontSize: Sizes.size16),
+          style: context.buttonTitle
+              .copyWith(fontSize: Sizes.size16, color: Colors.grey),
         ),
       ),
     );
