@@ -22,9 +22,6 @@ class MyApp extends StatelessWidget {
 class AppleWatch extends StatefulWidget {
   AppleWatch({super.key, required this.title});
   final String title;
-  final redValue = Random().nextDouble() * 2.0;
-  final greenalue = Random().nextDouble() * 2.0;
-  final blueValue = Random().nextDouble() * 2.0;
 
   @override
   State<AppleWatch> createState() => _AppleWatchState();
@@ -32,21 +29,49 @@ class AppleWatch extends StatefulWidget {
 
 class _AppleWatchState extends State<AppleWatch>
     with SingleTickerProviderStateMixin {
-  double redValue = Random().nextDouble() * 2.0;
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: Duration(milliseconds: 300),
-    lowerBound: 0.005,
-    upperBound: 1.8,
-  );
+    duration: Duration(milliseconds: 500),
+  )..forward();
+
+  late final CurvedAnimation _curve =
+      CurvedAnimation(parent: _animationController, curve: Curves.decelerate);
+
+  late Animation<double> _redProgress =
+      Tween(begin: 0.001, end: Random().nextDouble() * 2.0).animate(_curve);
+  late Animation<double> _blueProgress =
+      Tween(begin: 0.001, end: Random().nextDouble() * 2.0).animate(_curve);
+  late Animation<double> _greenProgress =
+      Tween(begin: 0.001, end: Random().nextDouble() * 2.0).animate(_curve);
+
+  @override
+  void dispose() {
+    super.dispose();
+    _animationController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // _animationController.forward();
+  }
 
   void _onTap() {
-    // setState(() {
-    //   redValue = Random().nextDouble() * 2.0;
-    //   print("_OnTap value = $redValue");
-    //
-    // });
-    _animationController.forward();
+    setState(() {
+      _redProgress = Tween(
+        begin: _redProgress.value,
+        end: Random().nextDouble() * 2.0,
+      ).animate(_curve);
+      _blueProgress = Tween(
+        begin: _blueProgress.value,
+        end: Random().nextDouble() * 2.0,
+      ).animate(_curve);
+      _greenProgress = Tween(
+        begin: _greenProgress.value,
+        end: Random().nextDouble() * 2.0,
+      ).animate(_curve);
+    });
+    _animationController.forward(from: 0);
   }
 
   @override
@@ -61,13 +86,13 @@ class _AppleWatchState extends State<AppleWatch>
         child: Column(
           children: [
             AnimatedBuilder(
-                animation: _animationController,
+                animation: _redProgress,
                 builder: (context, w) {
                   return CustomPaint(
                       painter: AppleWatchPainter(
-                          redValue: _animationController.value,
-                          greenValue: widget.greenalue,
-                          blueValue: widget.blueValue),
+                          redValue: _redProgress.value,
+                          greenValue: _blueProgress.value,
+                          blueValue: _greenProgress.value),
                       size: const Size(300, 300));
                 }),
             GestureDetector(
