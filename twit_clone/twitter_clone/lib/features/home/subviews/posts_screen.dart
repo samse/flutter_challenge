@@ -109,10 +109,7 @@ class _PostViewState extends State<PostView> {
                 children: [
                   buildAvatar(context, widget.post.profileUrl),
                   Expanded(
-                    child: Container(
-                      width: 1,
-                      color: Colors.black54,
-                    ),
+                    child: VerticalDivider(),
                   ),
                 ],
               ),
@@ -177,10 +174,11 @@ class _PostViewState extends State<PostView> {
             Text("${widget.post.likeCount} likes")
           ],
         ),
-        Container(
-            height: 1,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.black12),
+        Divider(),
+        // Container(
+        //     height: 1,
+        //     width: MediaQuery.of(context).size.width,
+        //     color: Colors.black12),
       ],
     );
   }

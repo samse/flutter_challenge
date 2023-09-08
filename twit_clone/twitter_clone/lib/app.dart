@@ -62,4 +62,7 @@ extension ThemeExtension on BuildContext {
       throw "열수 없는 url입니다.";
     }
   }
+
+  bool get isDarkMode =>
+      MediaQuery.of(this).platformBrightness == Brightness.dark;
 }

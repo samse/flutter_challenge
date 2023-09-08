@@ -262,6 +262,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ));
   }
 
+  Color selectedColor(int index) {
+    return _selectedIndex == index
+        ? context.isDarkMode
+            ? Colors.white
+            : Colors.black
+        : context.isDarkMode
+            ? Colors.white24
+            : Colors.black26;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -292,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: SafeArea(
         child: Container(
           height: 60,
-          color: Colors.white,
+          // color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Row(
@@ -301,35 +311,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 NavItem(
                   icon: FaIcon(
                     FontAwesomeIcons.house,
-                    color: _selectedIndex == 0 ? Colors.black : Colors.black26,
+                    color: selectedColor(
+                        0), //_selectedIndex == 0 ? Colors.black : Colors.black26,
                   ),
                   onTap: () => _onTap(0),
                 ),
                 NavItem(
                   icon: FaIcon(
                     FontAwesomeIcons.magnifyingGlass,
-                    color: _selectedIndex == 1 ? Colors.black : Colors.black26,
+                    color: selectedColor(
+                        1), //color: _selectedIndex == 1 ? Colors.black : Colors.black26,
                   ),
                   onTap: () => _onTap(1),
                 ),
                 NavItem(
                   icon: FaIcon(
                     FontAwesomeIcons.penToSquare,
-                    color: _selectedIndex == 2 ? Colors.black : Colors.black26,
+                    color: selectedColor(
+                        2), //color: _selectedIndex == 2 ? Colors.black : Colors.black26,
                   ),
                   onTap: () => _onTapPost(context),
                 ),
                 NavItem(
                   icon: FaIcon(
                     FontAwesomeIcons.heart,
-                    color: _selectedIndex == 3 ? Colors.black : Colors.black26,
+                    color: selectedColor(
+                        3), // color: _selectedIndex == 3 ? Colors.black : Colors.black26,
                   ),
                   onTap: () => _onTap(3),
                 ),
                 NavItem(
                   icon: FaIcon(
                     FontAwesomeIcons.user,
-                    color: _selectedIndex == 4 ? Colors.black : Colors.black26,
+                    color: selectedColor(
+                        4), // color: _selectedIndex == 4 ? Colors.black : Colors.black26,
                   ),
                   onTap: () => _onTap(4),
                 ),

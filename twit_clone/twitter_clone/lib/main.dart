@@ -23,7 +23,34 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       routerConfig: ref.watch(routerProvider),
       title: 'Flutter Demo',
+      themeMode: ThemeMode.system,
+      darkTheme: ThemeData(
+        scaffoldBackgroundColor: Colors.black,
+        brightness: Brightness.dark,
+        useMaterial3: true,
+        bottomAppBarTheme: BottomAppBarTheme(
+          color: Colors.green.shade50,
+        ),
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(
+              fontSize: 26,
+              fontFamily: "NanumGothicExtraBold",
+              fontWeight: FontWeight.w700),
+          titleMedium:
+              TextStyle(fontSize: 22, fontFamily: "NanumGothicExtraBold"),
+          titleSmall:
+              TextStyle(fontSize: 18, fontFamily: "NanumGothicExtraBold"),
+          bodyMedium: TextStyle(fontSize: 14),
+          headlineLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+          headlineMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          headlineSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w200),
+          displayLarge: TextStyle(fontSize: 24),
+          displayMedium: TextStyle(fontSize: 16),
+          displaySmall: TextStyle(fontSize: 12),
+        ),
+      ),
       theme: ThemeData(
+        brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
           primary: Color(0xFF52A2D8),
           seedColor: Colors.deepPurple,
