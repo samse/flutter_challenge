@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
 import 'package:camera/camera.dart';
@@ -115,8 +116,8 @@ class _AttachFileScreenState extends State<AttachFileScreen>
   Future<void> _takePicture(BuildContext context) async {
     print("takePicture");
     try {
-      final XFile file = await _cameraController.takePicture();
-      context.pop(file);
+      final XFile xfile = await _cameraController.takePicture();
+      context.pop(xfile);
     } catch (e) {
       print("사진을 찍을 수 업습니다.\n${e.toString()}");
     }
@@ -129,10 +130,20 @@ class _AttachFileScreenState extends State<AttachFileScreen>
     });
   }
 
-  void _onTapLibrary(BuildContext context) {
+  void _onTapLibrary(BuildContext context) async {
     setState(() {
       _isCameraMode = false;
     });
+
+    final xfile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxHeight: 1024,
+      maxWidth: 1024,
+    );
+    if (xfile != null) {
+      context.pop(xfile);
+    }
   }
 
   @override
