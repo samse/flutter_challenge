@@ -91,10 +91,13 @@ class _ActivityTabViewState extends ConsumerState<ActivityTabView> {
                       ],
                     ),
                     if (item.following != null)
-                      const SizedBox(
-                          width: 90,
-                          height: 30,
-                          child: RoundButton(title: "Follow"))
+                      SizedBox(
+                        width: 90,
+                        height: 30,
+                        child: RoundButton(
+                          title: "Follow",
+                        ),
+                      ),
                   ],
                 ),
                 Text(

@@ -6,9 +6,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
+import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/viewmodels/posts_view_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../../../common/sizes.dart';
 import '../../search/models/user.dart';
 import '../models/post.dart';
 
@@ -38,6 +40,17 @@ class _PostsScreenState extends ConsumerState<PostsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        // title: Text("Home"),
+        centerTitle: true,
+        title: Transform.rotate(
+          angle: 1.5,
+          child: const FaIcon(
+            FontAwesomeIcons.at,
+            size: Sizes.size40,
+          ),
+        ),
+      ),
       body: _posts.isEmpty
           ? Center(child: CircularProgressIndicator())
           : buildPosts(context),
@@ -173,52 +186,10 @@ class _PostViewState extends State<PostView> {
   }
 
   Widget buildAvatar(BuildContext context, String profileUrl) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Stack(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: Colors.black38, width: 1.0)),
-            child: Image.network(widget.post.profileUrl,
-                fit: BoxFit.fitHeight,
-                headers: const {
-                  "User-Agent":
-                      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-                }),
-          ),
-          Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                width: 20,
-                height: 20,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
-                ),
-              )),
-          Positioned(
-              right: 4,
-              bottom: 4,
-              child: Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.add_circle,
-                  color: Colors.black,
-                  size: 20,
-                ),
-              )),
-        ],
-      ),
+    return Avatar(
+      profileUrl: profileUrl,
+      size: const Size(40, 40),
+      hasIcon: true,
     );
   }
 
