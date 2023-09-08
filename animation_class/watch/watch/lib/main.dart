@@ -37,14 +37,16 @@ class _AppleWatchState extends State<AppleWatch>
     vsync: this,
     duration: Duration(milliseconds: 300),
     lowerBound: 0.005,
-    upperBound: 2.0,
+    upperBound: 1.8,
   );
 
   void _onTap() {
-    setState(() {
-      redValue = Random().nextDouble() * 2.0;
-      print("_OnTap value = $redValue");
-    });
+    // setState(() {
+    //   redValue = Random().nextDouble() * 2.0;
+    //   print("_OnTap value = $redValue");
+    //
+    // });
+    _animationController.forward();
   }
 
   @override
@@ -58,19 +60,16 @@ class _AppleWatchState extends State<AppleWatch>
       body: Center(
         child: Column(
           children: [
-            TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0, end: redValue),
-              duration: Duration(milliseconds: 300),
-              builder: (context, double value, child) {
-                return CustomPaint(
-                  painter: AppleWatchPainter(
-                      redValue: value,
-                      greenValue: widget.greenalue,
-                      blueValue: widget.blueValue),
-                  size: const Size(300, 300),
-                );
-              },
-            ),
+            AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, w) {
+                  return CustomPaint(
+                      painter: AppleWatchPainter(
+                          redValue: _animationController.value,
+                          greenValue: widget.greenalue,
+                          blueValue: widget.blueValue),
+                      size: const Size(300, 300));
+                }),
             GestureDetector(
               onTap: _onTap,
               child: Container(
