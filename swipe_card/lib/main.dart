@@ -35,46 +35,68 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   Offset xPos = Offset(0, 0);
+  late Size size = MediaQuery.of(context).size;
+
+  late final AnimationController _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+      lowerBound: -size.width,
+      upperBound: size.width,
+      value: 0);
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _onHorizontalDragUpdate(DragUpdateDetails details) {
+    print("details: $details");
+    _animationController.value += details.delta.dx;
+  }
+
+  void _onHorizontalDragEnd(DragEndDetails details) {
+    _animationController.animateTo(0, curve: Curves.decelerate);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: GestureDetector(
-              onHorizontalDragUpdate: (details) {
-                print("details: $details");
-                setState(() {
-                  xPos = xPos + details.delta;
-                });
-              },
-              onHorizontalDragEnd: (details) {
-                setState(() {
-                  xPos = Offset(0, 0);
-                });
-              },
-              child: Transform.translate(
-                offset: xPos, //Offset(xPos, 0),
-                child: Material(
-                  elevation: 10,
-                  color: Colors.orange,
-                  child: SizedBox(
-                    width: size.width * 0.7,
-                    height: size.height * 0.5,
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: GestureDetector(
+                      onHorizontalDragUpdate: (details) =>
+                          _onHorizontalDragUpdate(details),
+                      onHorizontalDragEnd: (details) =>
+                          _onHorizontalDragEnd(details),
+                      child: Transform.translate(
+                        offset: Offset(
+                            _animationController.value, 0), //Offset(xPos, 0),
+                        child: Material(
+                          elevation: 10,
+                          color: Colors.orange,
+                          child: SizedBox(
+                            width: size.width * 0.7,
+                            height: size.height * 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }));
   }
 }
