@@ -56,6 +56,36 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
     );
   }
 
+  Color getTabColor(BuildContext context, int index) {
+    return context.isDarkMode
+        ? _selectedIndex == index
+            ? Colors.white
+            : Colors.black
+        : _selectedIndex == index
+            ? Colors.black
+            : Colors.white;
+  }
+
+  Color getTabBorderColor(BuildContext context, int index) {
+    return context.isDarkMode
+        ? _selectedIndex == index
+            ? Colors.white
+            : Colors.black45
+        : _selectedIndex == index
+            ? Colors.black
+            : Colors.grey;
+  }
+
+  Color getTabTextColor(BuildContext context, int index) {
+    return context.isDarkMode
+        ? _selectedIndex == index
+            ? Colors.black
+            : Colors.white
+        : _selectedIndex == index
+            ? Colors.white
+            : Colors.black;
+  }
+
   List<Widget> makeTabs(BuildContext context) {
     List<Widget> widgets = [];
     for (var i = 0; i < tabs.length; i++) {
@@ -67,16 +97,14 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
           width: 100,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-                width: 1,
-                color: _selectedIndex == i ? Colors.black : Colors.grey),
-            color: _selectedIndex == i ? Colors.black : Colors.white,
+            border: Border.all(width: 1, color: getTabBorderColor(context, i)),
+            color: getTabColor(context, i),
           ),
           child: Center(
             child: Text(
               tab,
-              style: context.buttonTitle.copyWith(
-                  color: _selectedIndex == i ? Colors.white : Colors.black),
+              style: context.buttonTitle
+                  .copyWith(color: getTabTextColor(context, i)),
             ),
           ),
         ),
