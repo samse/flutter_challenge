@@ -62,6 +62,13 @@ class _MyHomePageState extends State<MyHomePage>
     _animationController.animateTo(0, curve: Curves.decelerate);
   }
 
+  double maxAngle = 0.7;
+  double _rotateValue(double delta) {
+    // wv : width = av : angle
+    // av = wv * angle / width
+    return delta * maxAngle / _animationController.upperBound;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -82,14 +89,19 @@ class _MyHomePageState extends State<MyHomePage>
                       onHorizontalDragEnd: (details) =>
                           _onHorizontalDragEnd(details),
                       child: Transform.translate(
-                        offset: Offset(
-                            _animationController.value, 0), //Offset(xPos, 0),
-                        child: Material(
-                          elevation: 10,
-                          color: Colors.orange,
-                          child: SizedBox(
-                            width: size.width * 0.7,
-                            height: size.height * 0.5,
+                        offset: Offset(_animationController.value, 0),
+                        child: Transform.rotate(
+                          // offset: Offset(
+                          //     _animationController.value, 0), //Offset(xPos, 0),
+                          angle: _rotateValue(_animationController.value),
+                          origin: Offset(0, size.height),
+                          child: Material(
+                            elevation: 10,
+                            color: Colors.orange,
+                            child: SizedBox(
+                              width: size.width * 0.7,
+                              height: size.height * 0.5,
+                            ),
                           ),
                         ),
                       ),
