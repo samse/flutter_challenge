@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'card.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -37,10 +39,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
+  int cardIndex = 1;
   Offset xPos = Offset(0, 0);
   late Size size = MediaQuery.of(context).size;
 
-  late final AnimationController _animationController = AnimationController(
+  late final AnimationController _positionAnim = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 500),
       lowerBound: -size.width,
@@ -51,27 +54,36 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _positionAnim.dispose();
     super.dispose();
   }
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
     // print("dragging details: $details");
-    _animationController.value += details.delta.dx;
+    _positionAnim.value += details.delta.dx;
   }
 
-  void _onHorizontalDragEnd(DragEndDetails details) {
-    print(
-        "_onHorizontalDragEnd: ${_animationController.value.abs()} / ${size.width}");
-    double movement = _animationController.value.abs();
+  void _onHorizontalDragEnd(DragEndDetails details) async {
+    print("_onHorizontalDragEnd: ${_positionAnim.value.abs()} / ${size.width}");
+    double movement = _positionAnim.value.abs();
     print("$movement > ${size.width / 4}");
     if (movement > (size.width / 4)) {
       print("set to invisible");
-      _animationController.animateTo(_animationController.value +
-          (_animationController.value.isNegative ? -200 : 200));
+      _positionAnim
+          .animateTo(_positionAnim.value +
+              (_positionAnim.value.isNegative ? -200 : 200))
+          .whenComplete(() {
+        setState(() {
+          cardIndex = cardIndex + 1;
+          if (cardIndex > 5) {
+            cardIndex = 1;
+          }
+          _positionAnim.value = 0;
+        });
+      });
     } else {
       print("set to 0");
-      _animationController.animateTo(0, curve: Curves.decelerate);
+      _positionAnim.animateTo(0, curve: Curves.decelerate);
     }
   }
 
@@ -79,31 +91,24 @@ class _MyHomePageState extends State<MyHomePage>
   double _rotateValue(double delta) {
     // wv : width = av : angle
     // av = wv * angle / width
-    print("_rotateValue ($delta)");
-    return delta * maxAngle / _animationController.upperBound;
-  }
-
-  double _scaleValue() {
-    print("_ScaleValue");
-    return _scaleTween.transform(
-        _animationController.value.abs() / _animationController.upperBound);
+    return delta * maxAngle / _positionAnim.upperBound;
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    // final scale = _scaleTween.transform(
-    //     _animationController.value.abs() / _animationController.upperBound);
-    print("pos: ${_animationController.value}");
+    print("pos: ${_positionAnim.value}");
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
         body: AnimatedBuilder(
-            animation: _animationController,
+            animation: _positionAnim,
             builder: (context, child) {
-              final _scale = _scaleValue();
+              final scale = _scaleTween.transform(
+                  _positionAnim.value.abs() / _positionAnim.upperBound);
+              print("Scale: $scale");
 
               return Stack(
                 alignment: Alignment.topCenter,
@@ -111,14 +116,9 @@ class _MyHomePageState extends State<MyHomePage>
                   Positioned(
                     top: 100,
                     child: Transform.scale(
-                      scale: _scale,
-                      child: Material(
-                        elevation: 10,
-                        color: Colors.amber,
-                        child: SizedBox(
-                          width: size.width * 0.8,
-                          height: size.height * 0.5,
-                        ),
+                      scale: scale,
+                      child: CoverCard(
+                        index: (cardIndex == 5) ? 1 : (cardIndex + 1),
                       ),
                     ),
                   ),
@@ -130,20 +130,13 @@ class _MyHomePageState extends State<MyHomePage>
                       onHorizontalDragEnd: (details) =>
                           _onHorizontalDragEnd(details),
                       child: Transform.translate(
-                        offset: Offset(_animationController.value, 0),
+                        offset: Offset(_positionAnim.value, 0),
                         child: Transform.rotate(
                           // offset: Offset(
                           //     _animationController.value, 0), //Offset(xPos, 0),
-                          angle: _rotateValue(_animationController.value),
+                          angle: _rotateValue(_positionAnim.value),
                           origin: Offset(0, size.height),
-                          child: Material(
-                            elevation: 10,
-                            color: Colors.orange,
-                            child: SizedBox(
-                              width: size.width * 0.8,
-                              height: size.height * 0.5,
-                            ),
-                          ),
+                          child: CoverCard(index: cardIndex),
                         ),
                       ),
                     ),
