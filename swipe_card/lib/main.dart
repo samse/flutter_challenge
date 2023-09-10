@@ -47,6 +47,8 @@ class _MyHomePageState extends State<MyHomePage>
       upperBound: size.width,
       value: 0);
 
+  Tween<double> _scaleTween = Tween(begin: 0.8, end: 1.0);
+
   @override
   void dispose() {
     _animationController.dispose();
@@ -54,24 +56,46 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
-    print("details: $details");
+    // print("dragging details: $details");
     _animationController.value += details.delta.dx;
   }
 
   void _onHorizontalDragEnd(DragEndDetails details) {
-    _animationController.animateTo(0, curve: Curves.decelerate);
+    print(
+        "_onHorizontalDragEnd: ${_animationController.value.abs()} / ${size.width}");
+    double movement = _animationController.value.abs();
+    print("$movement > ${size.width / 4}");
+    if (movement > (size.width / 4)) {
+      print("set to invisible");
+      _animationController.animateTo(_animationController.value +
+          (_animationController.value.isNegative ? -200 : 200));
+    } else {
+      print("set to 0");
+      _animationController.animateTo(0, curve: Curves.decelerate);
+    }
   }
 
   double maxAngle = 0.7;
   double _rotateValue(double delta) {
     // wv : width = av : angle
     // av = wv * angle / width
+    print("_rotateValue ($delta)");
     return delta * maxAngle / _animationController.upperBound;
+  }
+
+  double _scaleValue() {
+    print("_ScaleValue");
+    return _scaleTween.transform(
+        _animationController.value.abs() / _animationController.upperBound);
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    // final scale = _scaleTween.transform(
+    //     _animationController.value.abs() / _animationController.upperBound);
+    print("pos: ${_animationController.value}");
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -79,10 +103,27 @@ class _MyHomePageState extends State<MyHomePage>
         body: AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
+              final _scale = _scaleValue();
+
               return Stack(
+                alignment: Alignment.topCenter,
                 children: [
-                  Align(
-                    alignment: Alignment.topCenter,
+                  Positioned(
+                    top: 100,
+                    child: Transform.scale(
+                      scale: _scale,
+                      child: Material(
+                        elevation: 10,
+                        color: Colors.amber,
+                        child: SizedBox(
+                          width: size.width * 0.8,
+                          height: size.height * 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 100,
                     child: GestureDetector(
                       onHorizontalDragUpdate: (details) =>
                           _onHorizontalDragUpdate(details),
@@ -99,14 +140,14 @@ class _MyHomePageState extends State<MyHomePage>
                             elevation: 10,
                             color: Colors.orange,
                             child: SizedBox(
-                              width: size.width * 0.7,
+                              width: size.width * 0.8,
                               height: size.height * 0.5,
                             ),
                           ),
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               );
             }));
