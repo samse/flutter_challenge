@@ -160,7 +160,15 @@ class _AttachFileScreenState extends State<AttachFileScreen>
                 alignment: Alignment.center,
                 children: [
                   if (!_noCamera && _cameraController.value.isInitialized)
-                    CameraPreview(_cameraController),
+                    Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(50),
+                            bottomRight: Radius.circular(50),
+                          ),
+                        ),
+                        child: CameraPreview(_cameraController)),
                   // CameraBackground(),
                   CloseButton(),
                   ControlButtons(
