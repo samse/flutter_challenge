@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'card.dart';
+import 'circle_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage>
       value: 0);
 
   Tween<double> _scaleTween = Tween(begin: 0.8, end: 1.0);
+  Tween<double> _opacity = Tween(begin: 0.1, end: 1.0);
 
   @override
   void dispose() {
@@ -72,15 +74,7 @@ class _MyHomePageState extends State<MyHomePage>
       _positionAnim
           .animateTo(_positionAnim.value +
               (_positionAnim.value.isNegative ? -200 : 200))
-          .whenComplete(() {
-        setState(() {
-          cardIndex = cardIndex + 1;
-          if (cardIndex > 5) {
-            cardIndex = 1;
-          }
-          _positionAnim.value = 0;
-        });
-      });
+          .whenComplete(_whenCompleted);
     } else {
       print("set to 0");
       _positionAnim.animateTo(0, curve: Curves.decelerate);
@@ -92,6 +86,32 @@ class _MyHomePageState extends State<MyHomePage>
     // wv : width = av : angle
     // av = wv * angle / width
     return delta * maxAngle / _positionAnim.upperBound;
+  }
+
+  void _whenCompleted() {
+    setState(() {
+      cardIndex = cardIndex + 1;
+      if (cardIndex > 5) {
+        cardIndex = 1;
+      }
+      _positionAnim.value = 0;
+    });
+  }
+
+  void _onTapLeft(BuildContext context) {
+    print("TapLEFT ${_positionAnim.value}");
+    _positionAnim.reverse().whenComplete(() {
+      print("TapLEFT Completed ${_positionAnim.value}");
+      _whenCompleted();
+    });
+  }
+
+  void _onTapRight(BuildContext context) {
+    print("TapRight ${_positionAnim.value}");
+    _positionAnim.forward().whenComplete(() {
+      print("TapRight Completed ${_positionAnim.value}");
+      _whenCompleted();
+    });
   }
 
   @override
@@ -108,39 +128,81 @@ class _MyHomePageState extends State<MyHomePage>
             builder: (context, child) {
               final scale = _scaleTween.transform(
                   _positionAnim.value.abs() / _positionAnim.upperBound);
-              print("Scale: $scale");
-
-              return Stack(
-                alignment: Alignment.topCenter,
+              print("_positionAnimValue: ${_positionAnim.value}");
+              Color _leftColor = Colors.red.withOpacity(1.0);
+              Color _rightColor = Colors.blue.withOpacity(1.0);
+              final opacity = _opacity.transform(
+                  _positionAnim.value.abs() / _positionAnim.upperBound);
+              if (_positionAnim.value.isNegative) {
+                _leftColor = Colors.red.withOpacity(opacity);
+              } else if (_positionAnim.value > 0) {
+                _rightColor = Colors.blue.withOpacity(opacity);
+              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Positioned(
-                    top: 100,
-                    child: Transform.scale(
-                      scale: scale,
-                      child: CoverCard(
-                        index: (cardIndex == 5) ? 1 : (cardIndex + 1),
-                      ),
-                    ),
+                  SizedBox(
+                    height: 100,
+                    width: size.width,
                   ),
-                  Positioned(
-                    top: 100,
-                    child: GestureDetector(
-                      onHorizontalDragUpdate: (details) =>
-                          _onHorizontalDragUpdate(details),
-                      onHorizontalDragEnd: (details) =>
-                          _onHorizontalDragEnd(details),
-                      child: Transform.translate(
-                        offset: Offset(_positionAnim.value, 0),
-                        child: Transform.rotate(
-                          // offset: Offset(
-                          //     _animationController.value, 0), //Offset(xPos, 0),
-                          angle: _rotateValue(_positionAnim.value),
-                          origin: Offset(0, size.height),
-                          child: CoverCard(index: cardIndex),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Transform.scale(
+                        scale: scale,
+                        child: CoverCard(
+                          index: (cardIndex == 5) ? 1 : (cardIndex + 1),
                         ),
                       ),
-                    ),
+                      GestureDetector(
+                        onHorizontalDragUpdate: (details) =>
+                            _onHorizontalDragUpdate(details),
+                        onHorizontalDragEnd: (details) =>
+                            _onHorizontalDragEnd(details),
+                        child: Transform.translate(
+                          offset: Offset(_positionAnim.value, 0),
+                          child: Transform.rotate(
+                            // offset: Offset(
+                            //     _animationController.value, 0), //Offset(xPos, 0),
+                            angle: _rotateValue(_positionAnim.value),
+                            origin: Offset(0, size.height),
+                            child: CoverCard(index: cardIndex),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () => _onTapLeft(context),
+                        child: CircleButton(
+                          color: _leftColor,
+                          icon: Icon(Icons.close, color: Colors.white),
+                          size: Size(60, 60),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () => _onTapRight(context),
+                        child: CircleButton(
+                          color: _rightColor,
+                          icon: Icon(
+                            Icons.auto_awesome,
+                            color: Colors.white,
+                          ),
+                          size: Size(60, 60),
+                        ),
+                      )
+                    ],
+                  )
                 ],
               );
             }));
