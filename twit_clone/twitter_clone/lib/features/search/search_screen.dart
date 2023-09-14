@@ -67,7 +67,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           children: [
                             Text(
                               user.name,
-                              style: context.searchTitleText,
+                              style: context.isDarkMode(ref)
+                                  ? context.searchTitleText
+                                      .copyWith(color: Colors.white)
+                                  : context.searchTitleText,
                             ),
                             Gaps.h4,
                             const Icon(

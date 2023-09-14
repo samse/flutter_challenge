@@ -97,6 +97,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("context isDarkMode ${context.isDarkMode}");
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -140,12 +141,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     bool isLastItem = (index > menus.length - 2);
     return ListTile(
       leading: Icon(menu["icon"],
-          color: context.isDarkMode ? Colors.white : Colors.black),
+          color: context.isDarkMode(ref) ? Colors.white : Colors.black),
       title: Text(
         menu["text"],
         style: isLastItem
             ? context.settingItemText.copyWith(color: Colors.blue)
-            : context.settingItemText,
+            : context.isDarkMode(ref)
+                ? context.settingItemText.copyWith(color: Colors.white)
+                : context.settingItemText,
       ),
       trailing: (isDoingLogout && index == 6)
           ? CupertinoActivityIndicator()

@@ -268,10 +268,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Color selectedColor(int index) {
     return _selectedIndex == index
-        ? context.isDarkMode
+        ? context.isDarkMode(ref)
             ? Colors.white
             : Colors.black
-        : context.isDarkMode
+        : context.isDarkMode(ref)
             ? Colors.white24
             : Colors.black26;
   }

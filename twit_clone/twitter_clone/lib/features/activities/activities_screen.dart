@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/features/activities/activity_tab_view.dart';
 
-class ActivitiesScreen extends StatefulWidget {
+class ActivitiesScreen extends ConsumerStatefulWidget {
   static const routeURL = "/activity";
   static const routeName = "activity";
   const ActivitiesScreen({super.key});
 
   @override
-  State<ActivitiesScreen> createState() => _ActivitiesScreenState();
+  ConsumerState<ActivitiesScreen> createState() => _ActivitiesScreenState();
 }
 
 final tabs = [
@@ -21,7 +22,7 @@ final tabs = [
   "Rejects",
 ];
 
-class _ActivitiesScreenState extends State<ActivitiesScreen> {
+class _ActivitiesScreenState extends ConsumerState<ActivitiesScreen> {
   int _selectedIndex = 0;
 
   @override
@@ -59,7 +60,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
   }
 
   Color getTabColor(BuildContext context, int index) {
-    return context.isDarkMode
+    return context.isDarkMode(ref)
         ? _selectedIndex == index
             ? Colors.white
             : Colors.black
@@ -69,7 +70,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
   }
 
   Color getTabBorderColor(BuildContext context, int index) {
-    return context.isDarkMode
+    return context.isDarkMode(ref)
         ? _selectedIndex == index
             ? Colors.white
             : Colors.black45
@@ -79,7 +80,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
   }
 
   Color getTabTextColor(BuildContext context, int index) {
-    return context.isDarkMode
+    return context.isDarkMode(ref)
         ? _selectedIndex == index
             ? Colors.black
             : Colors.white

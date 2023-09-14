@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/common/sizes.dart';
+import 'package:twitter_clone/config/viewmodel/config_view_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 extension ThemeExtension on BuildContext {
@@ -33,15 +35,10 @@ extension ThemeExtension on BuildContext {
   // 일반
   TextStyle get normal => textTheme.displayMedium!;
 
-  TextStyle get searchTitleText => isDarkMode
-      ? textTheme.headlineMedium!.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        )
-      : textTheme.headlineMedium!.copyWith(
-          color: Colors.black,
-          fontWeight: FontWeight.w500,
-        );
+  TextStyle get searchTitleText => textTheme.headlineMedium!.copyWith(
+        color: Colors.black,
+        fontWeight: FontWeight.w500,
+      );
   TextStyle get searchSubTitleText => textTheme.headlineMedium!.copyWith(
         color: Colors.grey,
         fontWeight: FontWeight.w500,
@@ -51,11 +48,8 @@ extension ThemeExtension on BuildContext {
         fontWeight: FontWeight.w500,
       );
 
-  TextStyle get settingItemText => isDarkMode
-      ? textTheme.headlineMedium!
-          .copyWith(color: Colors.white, fontWeight: FontWeight.w500)
-      : textTheme.headlineMedium!
-          .copyWith(color: Colors.black, fontWeight: FontWeight.w500);
+  TextStyle get settingItemText => textTheme.headlineMedium!
+      .copyWith(color: Colors.black, fontWeight: FontWeight.w500);
 
   Container divider(BuildContext context) => Container(
       width: MediaQuery.of(context).size.width,
@@ -71,6 +65,10 @@ extension ThemeExtension on BuildContext {
     }
   }
 
-  bool get isDarkMode =>
-      MediaQuery.of(this).platformBrightness == Brightness.dark;
+  bool isDarkMode(WidgetRef ref) {
+    return ref.read(configProvider.notifier).isDarkMode;
+  }
+
+  // bool get isDarkMode =>
+  //     MediaQuery.of(this).platformBrightness == Brightness.dark;
 }

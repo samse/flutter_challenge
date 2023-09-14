@@ -1,16 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
 
-class PrivacyScreen extends StatelessWidget {
+class PrivacyScreen extends ConsumerStatefulWidget {
   static const routeURL = "privacy/:userId";
   static const routeName = "privacy";
-  bool isDoingLogout = false;
 
   PrivacyScreen({super.key});
+
+  @override
+  ConsumerState<PrivacyScreen> createState() => _PrivacyScreenState();
+}
+
+class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
+  bool isDoingLogout = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,10 +89,12 @@ class PrivacyScreen extends StatelessWidget {
     bool isDividerItem = (index > menus.length == 3);
     return ListTile(
       leading: Icon(menu["icon"],
-          color: context.isDarkMode ? Colors.white : Colors.black),
+          color: context.isDarkMode(ref) ? Colors.white : Colors.black),
       title: Text(
         menu["text"] ?? "",
-        style: context.settingItemText,
+        style: context.isDarkMode(ref)
+            ? context.settingItemText.copyWith(color: Colors.white)
+            : context.settingItemText,
       ),
       trailing: makeTrailing(context, menu),
       subtitle: menu["desc"] != null ? Text(menu["desc"]!) : null,
