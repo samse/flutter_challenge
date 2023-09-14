@@ -6,7 +6,7 @@ import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
 
 class PrivacyScreen extends StatelessWidget {
-  static const routeURL = "/privacy";
+  static const routeURL = "privacy/:userId";
   static const routeName = "privacy";
   bool isDoingLogout = false;
 
@@ -25,7 +25,6 @@ class PrivacyScreen extends StatelessWidget {
         leadingWidth: 100,
         title: Text("Privacy"),
         elevation: 1,
-        backgroundColor: Colors.white,
       ),
       body: ListView.separated(
         itemCount: menus.length,
@@ -38,29 +37,25 @@ class PrivacyScreen extends StatelessWidget {
   }
 
   List<Map<String, dynamic>> menus = [
+    {"icon": Icons.lock, "text": "Private profile", "toggle": true},
     {
-      "icon": const Icon(Icons.lock, color: Colors.black),
-      "text": "Private profile",
-      "toggle": true
-    },
-    {
-      "icon": const Icon(Icons.alternate_email, color: Colors.black),
+      "icon": Icons.alternate_email,
       "text": "Mentions",
       "submenu": true,
       "subtext": "Everyone"
     },
     {
-      "icon": const Icon(Icons.volume_mute_outlined, color: Colors.black),
+      "icon": Icons.volume_mute_outlined,
       "text": "Muted",
       "submenu": true,
     },
     {
-      "icon": const FaIcon(FontAwesomeIcons.eyeSlash, color: Colors.black),
+      "icon": FontAwesomeIcons.eyeSlash,
       "text": "Hidden Words",
       "submenu": true,
     },
     {
-      "icon": const Icon(Icons.help_outline, color: Colors.black),
+      "icon": Icons.help_outline,
       "text": "Prifiles you follow",
       "submenu": true,
     },
@@ -71,12 +66,12 @@ class PrivacyScreen extends StatelessWidget {
           "Some settings, like restrict, apply to both Threads and instagram and can be managed on Instagram.",
     },
     {
-      "icon": const Icon(Icons.block_flipped, color: Colors.black),
+      "icon": Icons.block_flipped,
       "text": "Blocked profiles",
       "link": true,
     },
     {
-      "icon": const Icon(Icons.heart_broken, color: Colors.black),
+      "icon": Icons.heart_broken,
       "text": "Hide likes",
       "link": true,
     },
@@ -86,7 +81,8 @@ class PrivacyScreen extends StatelessWidget {
     Map<String, dynamic> menu = menus[index];
     bool isDividerItem = (index > menus.length == 3);
     return ListTile(
-      leading: menu["icon"] ?? null,
+      leading: Icon(menu["icon"],
+          color: context.isDarkMode ? Colors.white : Colors.black),
       title: Text(
         menu["text"] ?? "",
         style: context.settingItemText,

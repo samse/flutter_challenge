@@ -4,6 +4,8 @@ import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/features/activities/activity_tab_view.dart';
 
 class ActivitiesScreen extends StatefulWidget {
+  static const routeURL = "/activity";
+  static const routeName = "activity";
   const ActivitiesScreen({super.key});
 
   @override

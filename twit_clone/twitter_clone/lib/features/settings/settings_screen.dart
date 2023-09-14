@@ -38,7 +38,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     print("_onTap: $index");
     if (index == 2) {
       // Privacy
-      context.pushNamed(PrivacyScreen.routeName);
+      // context.pushNamed(PrivacyScreen.routeName);
+      context.pushNamed(PrivacyScreen.routeName, extra: {"userId": '1234'});
     } else if (index == 6) {
       print("kIsWeb : $kIsWeb");
       if (kIsWeb || Platform.isAndroid) {
@@ -91,7 +92,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leadingWidth: 100,
         title: Text("Settings"),
         elevation: 1,
-        backgroundColor: Colors.white,
       ),
       body: ListView.separated(
         itemCount: menus.length,
@@ -108,21 +108,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   List<Map<String, dynamic>> menus = [
-    {
-      "icon": Icon(Icons.person_add, color: Colors.black),
-      "text": "Follow and invite friends"
-    },
-    {
-      "icon": Icon(Icons.notifications, color: Colors.black),
-      "text": "Notifications"
-    },
-    {"icon": Icon(Icons.lock, color: Colors.black), "text": "Privacy"},
-    {
-      "icon": Icon(Icons.account_circle_outlined, color: Colors.black),
-      "text": "Account"
-    },
-    {"icon": Icon(Icons.help_outline, color: Colors.black), "text": "Help"},
-    {"icon": Icon(Icons.info_outline, color: Colors.black), "text": "About"},
+    {"icon": Icons.person_add, "text": "Follow and invite friends"},
+    {"icon": Icons.notifications, "text": "Notifications"},
+    {"icon": Icons.lock, "text": "Privacy"},
+    {"icon": Icons.account_circle_outlined, "text": "Account"},
+    {"icon": Icons.help_outline, "text": "Help"},
+    {"icon": Icons.info_outline, "text": "About"},
     {"text": "Log out"}
   ];
 
@@ -130,7 +121,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     Map<String, dynamic> menu = menus[index];
     bool isLastItem = (index > menus.length - 2);
     return ListTile(
-      leading: menu["icon"],
+      leading: Icon(menu["icon"],
+          color: context.isDarkMode ? Colors.white : Colors.black),
       title: Text(
         menu["text"],
         style: isLastItem

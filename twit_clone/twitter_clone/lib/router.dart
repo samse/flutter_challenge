@@ -7,10 +7,13 @@ import 'package:twitter_clone/features/authentication/password_screen.dart';
 import 'package:twitter_clone/features/authentication/pincode_verify_screen.dart';
 import 'package:twitter_clone/features/home/home_screen.dart';
 import 'package:twitter_clone/features/home/subviews/attach_file_screen.dart';
+import 'package:twitter_clone/features/search/search_screen.dart';
 import 'package:twitter_clone/features/settings/settings_screen.dart';
 
+import 'features/activities/activities_screen.dart';
 import 'features/authentication/signup_screen.dart';
 import 'features/settings/subviews/privacy_screen.dart';
+import 'features/user_profile/user_profile_screen.dart';
 
 final routerProvider = Provider((ref) {
   return GoRouter(initialLocation: "/home", routes: [
@@ -18,6 +21,21 @@ final routerProvider = Provider((ref) {
       name: OnBoardingScreen.routeName,
       path: OnBoardingScreen.routeURL,
       builder: (context, state) => const OnBoardingScreen(),
+    ),
+    GoRoute(
+      name: SearchScreen.routeName,
+      path: SearchScreen.routeURL,
+      builder: (context, state) => const SearchScreen(),
+    ),
+    GoRoute(
+      name: ActivitiesScreen.routeName,
+      path: ActivitiesScreen.routeURL,
+      builder: (context, state) => const ActivitiesScreen(),
+    ),
+    GoRoute(
+      name: UserProfileScreen.routeName,
+      path: UserProfileScreen.routeURL,
+      builder: (context, state) => const UserProfileScreen(),
     ),
     GoRoute(
       name: SignUpScreen.routeName,
@@ -50,15 +68,19 @@ final routerProvider = Provider((ref) {
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
-      name: SettingsScreen.routeName,
-      path: SettingsScreen.routeURL,
-      builder: (context, state) => SettingsScreen(),
-    ),
-    GoRoute(
-      name: PrivacyScreen.routeName,
-      path: PrivacyScreen.routeURL,
-      builder: (context, state) => PrivacyScreen(),
-    ),
+        name: SettingsScreen.routeName,
+        path: SettingsScreen.routeURL,
+        builder: (context, state) => SettingsScreen(),
+        routes: [
+          GoRoute(
+            name: PrivacyScreen.routeName,
+            path: PrivacyScreen.routeURL,
+            builder: (context, state) {
+              // final userId = state.params["userId"];
+              return PrivacyScreen();
+            },
+          ),
+        ]),
     GoRoute(
       name: AttachFileScreen.routeName,
       path: AttachFileScreen.routeURL,

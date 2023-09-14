@@ -11,6 +11,8 @@ import '../../common/roundbutton.dart';
 import 'models/user.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
+  static const routeURL = "/search";
+  static const routeName = "search";
   const SearchScreen({super.key});
 
   @override
