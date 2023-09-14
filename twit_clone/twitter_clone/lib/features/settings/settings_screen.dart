@@ -3,24 +3,36 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
+import 'package:twitter_clone/config/viewmodel/config_view_model.dart';
 import 'package:twitter_clone/features/settings/subviews/privacy_screen.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   static const routeURL = "/settings";
   static const routeName = "settings";
 
   SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool isDoingLogout = false;
+  bool isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // ref.read(configProvider.notifier).addListener(() {
+    //   isDarkMode = ref.read(configProvider.notifier).isDarkMode;
+    //   print("isDarkMode set to $isDarkMode");
+    // });
+  }
 
   void _doLogout() {
     context.pop();
@@ -112,6 +124,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   List<Map<String, dynamic>> menus = [
+    {"icon": Icons.lock, "text": "darkMode", "toggle": true},
     {"icon": Icons.person_add, "text": "Follow and invite friends"},
     {"icon": Icons.notifications, "text": "Notifications"},
     {"icon": Icons.lock, "text": "Privacy"},
@@ -123,6 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   ListTile makeTile(BuildContext context, int index) {
     Map<String, dynamic> menu = menus[index];
+    bool toggle = menu["toggle"] ?? false;
     bool isLastItem = (index > menus.length - 2);
     return ListTile(
       leading: Icon(menu["icon"],
@@ -133,8 +147,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ? context.settingItemText.copyWith(color: Colors.blue)
             : context.settingItemText,
       ),
-      trailing:
-          (isDoingLogout && index == 6) ? CupertinoActivityIndicator() : null,
+      trailing: (isDoingLogout && index == 6)
+          ? CupertinoActivityIndicator()
+          : toggle == true
+              ? CupertinoSwitch(
+                  value: ref.read(configProvider.notifier).isDarkMode,
+                  trackColor: Colors.black,
+                  activeColor: Colors.black,
+                  onChanged: (bool value) {
+                    setState(() {
+                      ref.read(configProvider.notifier).toggleDarkMode();
+                    });
+                  },
+                )
+              : null,
     );
   }
 }

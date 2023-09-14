@@ -11,6 +11,7 @@ import 'package:twitter_clone/features/home/viewmodels/posts_view_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../common/sizes.dart';
+import '../../../config/viewmodel/config_view_model.dart';
 import '../../search/models/user.dart';
 import '../models/post.dart';
 
@@ -76,15 +77,15 @@ class _PostsScreenState extends ConsumerState<PostsScreen> {
 /// 1. contents와 이미지가 모두 있음
 /// 2. contents만 있음
 /// 3. 이미지만 있음.
-class PostView extends StatefulWidget {
+class PostView extends ConsumerStatefulWidget {
   final Post post;
   const PostView({super.key, required this.post});
 
   @override
-  State<PostView> createState() => _PostViewState();
+  ConsumerState<PostView> createState() => _PostViewState();
 }
 
-class _PostViewState extends State<PostView> {
+class _PostViewState extends ConsumerState<PostView> {
   final double imgCellHeight = 270;
   double get _leftCellHeight {
     double height = 60;
@@ -120,6 +121,9 @@ class _PostViewState extends State<PostView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    ref.watch(configProvider.notifier).isDarkMode
+                        ? Text("DarkMode")
+                        : Text("LightMode"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

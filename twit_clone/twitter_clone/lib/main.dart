@@ -6,6 +6,7 @@ import 'package:twitter_clone/features/authentication/customized_experience_scre
 import 'package:twitter_clone/features/authentication/onboarding_screen.dart';
 import 'package:twitter_clone/router.dart';
 
+import 'config/viewmodel/config_view_model.dart';
 import 'features/authentication/signup_screen.dart';
 
 void main() {
@@ -20,10 +21,17 @@ class MyApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(configProvider.notifier).addListener(() {
+      final isDarkMode = ref.read(configProvider.notifier).isDarkMode;
+      print("MyApp isDarkMode set to $isDarkMode");
+    });
+
     return MaterialApp.router(
       routerConfig: ref.watch(routerProvider),
       title: 'Flutter Demo',
-      themeMode: ThemeMode.system,
+      // themeMode: ref.read(configProvider.notifier).isDarkMode
+      //     ? ThemeMode.dark
+      //     : ThemeMode.light,
       darkTheme: ThemeData(
         scaffoldBackgroundColor: Colors.black,
         brightness: Brightness.dark,
