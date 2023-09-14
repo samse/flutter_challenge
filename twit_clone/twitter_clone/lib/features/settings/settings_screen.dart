@@ -39,7 +39,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (index == 2) {
       // Privacy
       // context.pushNamed(PrivacyScreen.routeName);
-      context.pushNamed(PrivacyScreen.routeName, extra: {"userId": '1234'});
+      // context.pushNamed(PrivacyScreen.routeName, extra: {"userId": '1234'});
+      context.pushNamed(PrivacyScreen.routeName,
+          pathParameters: {"userId": '1234'});
+      // Navigator.of(context)
+      //     .pushNamed(PrivacyScreen.routeName, arguments: {"userId": "21"});
     } else if (index == 6) {
       print("kIsWeb : $kIsWeb");
       if (kIsWeb || Platform.isAndroid) {
