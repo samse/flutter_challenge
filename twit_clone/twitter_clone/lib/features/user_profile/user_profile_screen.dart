@@ -13,6 +13,8 @@ import 'package:twitter_clone/features/user_profile/subviews/thread_view.dart';
 const headerHeight = 284.0;
 
 class UserProfileScreen extends ConsumerStatefulWidget {
+  static const routeURL = "/profile";
+  static const routeName = "profile";
   const UserProfileScreen({super.key});
 
   @override

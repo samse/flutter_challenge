@@ -3,24 +3,36 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
+import 'package:twitter_clone/config/viewmodel/config_view_model.dart';
 import 'package:twitter_clone/features/settings/subviews/privacy_screen.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   static const routeURL = "/settings";
   static const routeName = "settings";
 
   SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool isDoingLogout = false;
+  bool isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // ref.read(configProvider.notifier).addListener(() {
+    //   isDarkMode = ref.read(configProvider.notifier).isDarkMode;
+    //   print("isDarkMode set to $isDarkMode");
+    // });
+  }
 
   void _doLogout() {
     context.pop();
@@ -38,7 +50,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     print("_onTap: $index");
     if (index == 2) {
       // Privacy
-      context.pushNamed(PrivacyScreen.routeName);
+      // context.pushNamed(PrivacyScreen.routeName);
+      // context.pushNamed(PrivacyScreen.routeName, extra: {"userId": '1234'});
+      context.pushNamed(PrivacyScreen.routeName,
+          pathParameters: {"userId": '1234'});
+      // Navigator.of(context)
+      //     .pushNamed(PrivacyScreen.routeName, arguments: {"userId": "21"});
     } else if (index == 6) {
       print("kIsWeb : $kIsWeb");
       if (kIsWeb || Platform.isAndroid) {
@@ -80,6 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("context isDarkMode ${context.isDarkMode}");
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -91,7 +109,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leadingWidth: 100,
         title: Text("Settings"),
         elevation: 1,
-        backgroundColor: Colors.white,
       ),
       body: ListView.separated(
         itemCount: menus.length,
@@ -108,37 +125,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   List<Map<String, dynamic>> menus = [
-    {
-      "icon": Icon(Icons.person_add, color: Colors.black),
-      "text": "Follow and invite friends"
-    },
-    {
-      "icon": Icon(Icons.notifications, color: Colors.black),
-      "text": "Notifications"
-    },
-    {"icon": Icon(Icons.lock, color: Colors.black), "text": "Privacy"},
-    {
-      "icon": Icon(Icons.account_circle_outlined, color: Colors.black),
-      "text": "Account"
-    },
-    {"icon": Icon(Icons.help_outline, color: Colors.black), "text": "Help"},
-    {"icon": Icon(Icons.info_outline, color: Colors.black), "text": "About"},
+    {"icon": Icons.lock, "text": "darkMode", "toggle": true},
+    {"icon": Icons.person_add, "text": "Follow and invite friends"},
+    {"icon": Icons.notifications, "text": "Notifications"},
+    {"icon": Icons.lock, "text": "Privacy"},
+    {"icon": Icons.account_circle_outlined, "text": "Account"},
+    {"icon": Icons.help_outline, "text": "Help"},
+    {"icon": Icons.info_outline, "text": "About"},
     {"text": "Log out"}
   ];
 
   ListTile makeTile(BuildContext context, int index) {
     Map<String, dynamic> menu = menus[index];
+    bool toggle = menu["toggle"] ?? false;
     bool isLastItem = (index > menus.length - 2);
     return ListTile(
-      leading: menu["icon"],
+      leading: Icon(menu["icon"],
+          color: context.isDarkMode(ref) ? Colors.white : Colors.black),
       title: Text(
         menu["text"],
         style: isLastItem
             ? context.settingItemText.copyWith(color: Colors.blue)
-            : context.settingItemText,
+            : context.isDarkMode(ref)
+                ? context.settingItemText.copyWith(color: Colors.white)
+                : context.settingItemText,
       ),
-      trailing:
-          (isDoingLogout && index == 6) ? CupertinoActivityIndicator() : null,
+      trailing: (isDoingLogout && index == 6)
+          ? CupertinoActivityIndicator()
+          : toggle == true
+              ? CupertinoSwitch(
+                  value: ref.read(configProvider.notifier).isDarkMode,
+                  trackColor: Colors.black,
+                  activeColor: Colors.black,
+                  onChanged: (bool value) {
+                    setState(() {
+                      ref.read(configProvider.notifier).toggleDarkMode();
+                    });
+                  },
+                )
+              : null,
     );
   }
 }

@@ -11,6 +11,8 @@ import '../../common/roundbutton.dart';
 import 'models/user.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
+  static const routeURL = "/search";
+  static const routeName = "search";
   const SearchScreen({super.key});
 
   @override
@@ -65,7 +67,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           children: [
                             Text(
                               user.name,
-                              style: context.searchTitleText,
+                              style: context.isDarkMode(ref)
+                                  ? context.searchTitleText
+                                      .copyWith(color: Colors.white)
+                                  : context.searchTitleText,
                             ),
                             Gaps.h4,
                             const Icon(

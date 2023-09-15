@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/nav_item.dart';
+import 'package:twitter_clone/config/viewmodel/config_view_model.dart';
 import 'package:twitter_clone/features/activities/activities_screen.dart';
 import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/models/post.dart';
@@ -17,17 +19,17 @@ import '../../common/sizes.dart';
 import '../search/models/user.dart';
 import '../search/search_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   static const routeURL = "/home";
   static const routeName = "home";
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 3;
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _selectedIndex = 0;
   final user = User(
     name: 'samse',
     profileUrl:
@@ -45,6 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       print("$text -> isEmpty ${text.isEmpty}");
     });
+
+    ref.read(configProvider.notifier).isDarkMode;
     super.initState();
   }
 
@@ -264,10 +268,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Color selectedColor(int index) {
     return _selectedIndex == index
-        ? context.isDarkMode
+        ? context.isDarkMode(ref)
             ? Colors.white
             : Colors.black
-        : context.isDarkMode
+        : context.isDarkMode(ref)
             ? Colors.white24
             : Colors.black26;
   }
