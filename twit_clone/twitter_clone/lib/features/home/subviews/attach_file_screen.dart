@@ -161,6 +161,8 @@ class _AttachFileScreenState extends State<AttachFileScreen>
                 children: [
                   if (!_noCamera && _cameraController.value.isInitialized)
                     Container(
+                        width: size.width,
+                        height: size.height - 260,
                         clipBehavior: Clip.hardEdge,
                         decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(

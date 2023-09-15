@@ -50,6 +50,14 @@ dependencies:
   gallery_saver: ^2.3.2
   permission_handler: ^10.4.3
   path_provider: ^2.1.1
+  firebase_core: ^2.15.1
+  firebase_auth: ^4.9.0
+  cloud_firestore: ^4.9.1
+  cloud_functions: ^4.4.0
+  firebase_storage: ^11.2.6
+  firebase_messaging: ^14.6.7
+  firebase_dynamic_links: ^5.3.5
+  firebase_crashlytics: ^3.3.5
 
 dev_dependencies:
   flutter_test:
