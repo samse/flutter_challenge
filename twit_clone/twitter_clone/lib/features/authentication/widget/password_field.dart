@@ -58,15 +58,6 @@ class _PasswordFieldState extends State<PasswordField> {
         suffix: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // GestureDetector(
-            //   onTap: _onClearTap,
-            //   child: FaIcon(
-            //     FontAwesomeIcons.solidCircleXmark,
-            //     color: Colors.grey.shade500,
-            //     size: Sizes.size20,
-            //   ),
-            // ),
-            // Gaps.h10,
             GestureDetector(
               onTap: _toggleObscureText,
               child: FaIcon(

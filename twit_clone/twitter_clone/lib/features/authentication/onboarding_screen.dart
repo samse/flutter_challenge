@@ -189,21 +189,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           highlightStyle:
                               const TextStyle(color: Colors.lightBlueAccent),
                         ),
-                        // child: RichText(
-                        //   text: const TextSpan(
-                        //     text: "Have an account aleady? ",
-                        //     style: TextStyle(
-                        //       color: Colors.black,
-                        //       fontSize: Sizes.size18,
-                        //     ),
-                        //     children: [
-                        //       TextSpan(
-                        //         text: "Login",
-                        //         style: TextStyle(color: Colors.lightBlueAccent),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
                       ),
                       Gaps.v12,
                     ],

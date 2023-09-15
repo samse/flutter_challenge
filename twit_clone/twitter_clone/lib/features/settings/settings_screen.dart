@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
@@ -23,15 +22,21 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool isDoingLogout = false;
-  bool isDarkMode = false;
+
+  List<Map<String, dynamic>> menus = [
+    {"icon": Icons.lock, "text": "darkMode", "toggle": true},
+    {"icon": Icons.person_add, "text": "Follow and invite friends"},
+    {"icon": Icons.notifications, "text": "Notifications"},
+    {"icon": Icons.lock, "text": "Privacy"},
+    {"icon": Icons.account_circle_outlined, "text": "Account"},
+    {"icon": Icons.help_outline, "text": "Help"},
+    {"icon": Icons.info_outline, "text": "About"},
+    {"text": "Log out"}
+  ];
 
   @override
   void initState() {
     super.initState();
-    // ref.read(configProvider.notifier).addListener(() {
-    //   isDarkMode = ref.read(configProvider.notifier).isDarkMode;
-    //   print("isDarkMode set to $isDarkMode");
-    // });
   }
 
   void _doLogout() {
@@ -48,14 +53,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   void _onTap(BuildContext context, int index) {
     print("_onTap: $index");
-    if (index == 2) {
-      // Privacy
-      // context.pushNamed(PrivacyScreen.routeName);
-      // context.pushNamed(PrivacyScreen.routeName, extra: {"userId": '1234'});
+    if (index == 3) {
       context.pushNamed(PrivacyScreen.routeName,
           pathParameters: {"userId": '1234'});
-      // Navigator.of(context)
-      //     .pushNamed(PrivacyScreen.routeName, arguments: {"userId": "21"});
     } else if (index == 6) {
       print("kIsWeb : $kIsWeb");
       if (kIsWeb || Platform.isAndroid) {
@@ -123,17 +123,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ),
     );
   }
-
-  List<Map<String, dynamic>> menus = [
-    {"icon": Icons.lock, "text": "darkMode", "toggle": true},
-    {"icon": Icons.person_add, "text": "Follow and invite friends"},
-    {"icon": Icons.notifications, "text": "Notifications"},
-    {"icon": Icons.lock, "text": "Privacy"},
-    {"icon": Icons.account_circle_outlined, "text": "Account"},
-    {"icon": Icons.help_outline, "text": "Help"},
-    {"icon": Icons.info_outline, "text": "About"},
-    {"text": "Log out"}
-  ];
 
   ListTile makeTile(BuildContext context, int index) {
     Map<String, dynamic> menu = menus[index];
