@@ -67,6 +67,11 @@ final routerProvider = Provider((ref) {
           builder: (context, state) => const SignUpScreen(),
         ),
         GoRoute(
+          name: LoginScreen.routeName,
+          path: LoginScreen.routeURL,
+          builder: (context, state) => const LoginScreen(),
+        ),
+        GoRoute(
           name: CustomizedExperienceScreen.routeName,
           path: CustomizedExperienceScreen.routeURL,
           builder: (context, state) => const CustomizedExperienceScreen(),

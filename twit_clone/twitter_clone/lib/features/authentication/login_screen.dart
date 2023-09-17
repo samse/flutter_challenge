@@ -9,6 +9,7 @@ import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
 import 'package:twitter_clone/features/authentication/customized_experience_screen.dart';
 import 'package:twitter_clone/features/authentication/pincode_verify_screen.dart';
+import 'package:twitter_clone/features/authentication/signup_screen.dart';
 import 'package:twitter_clone/features/authentication/viewmodel/signup_view_model.dart';
 import 'package:twitter_clone/features/authentication/widget/form_button.dart';
 import 'package:twitter_clone/features/authentication/widget/password_field.dart';
@@ -85,67 +86,99 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Gaps.v40,
-                const Text(
-                  "Login",
-                  style: TextStyle(
-                    fontSize: Sizes.size24,
-                    fontWeight: FontWeight.w600,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Gaps.v80,
+              Center(
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: Colors.black,
                   ),
-                ),
-                Gaps.v10,
-                TextField(
-                  controller: _emailController,
-                  autocorrect: false,
-                  keyboardType: TextInputType.emailAddress,
-                  style: context.hintText,
-                  decoration: InputDecoration(
-                    hintText: "Email address",
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.grey.shade400,
-                      ),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.grey.shade400,
-                      ),
-                    ),
-                    suffixIcon: SizedBox(
-                      width: 20,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: FaIcon(
-                          FontAwesomeIcons.circleCheck,
-                          color: _isEmailValid()
-                              ? Colors.green
-                              : Colors.transparent,
-                          size: Sizes.size20,
-                        ),
+                  child: Center(
+                    child: Transform.rotate(
+                      angle: 1.7,
+                      child: const FaIcon(
+                        FontAwesomeIcons.at,
+                        size: Sizes.size40,
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-                Gaps.v24,
-                PasswordField(
-                    obscureText: _obscureText,
-                    hintText: "Password",
-                    controller: _passwordController,
-                    isVerified: _isPasswordValid()),
-                Gaps.v10,
-                GestureDetector(
+              ),
+              Gaps.v80,
+              TextField(
+                controller: _emailController,
+                autocorrect: false,
+                keyboardType: TextInputType.emailAddress,
+                style: context.hintText,
+                decoration: InputDecoration(
+                  hintText: "Email address",
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                  suffixIcon: SizedBox(
+                    width: 20,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: FaIcon(
+                        FontAwesomeIcons.circleCheck,
+                        color:
+                            _isEmailValid() ? Colors.green : Colors.transparent,
+                        size: Sizes.size20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Gaps.v24,
+              PasswordField(
+                  obscureText: _obscureText,
+                  hintText: "Password",
+                  controller: _passwordController,
+                  isVerified: _isPasswordValid()),
+              Gaps.v10,
+              GestureDetector(
+                  onTap: () {
+                    _onSignIn(context);
+                  },
+                  child: FormButton(disabled: false, text: "Log In")),
+              Gaps.v20,
+              const Center(child: Text("Forgot password?")),
+              Expanded(
+                  child: Stack(children: [
+                Positioned(
+                  bottom: 10,
+                  child: GestureDetector(
                     onTap: () {
-                      _onSignIn(context);
+                      context.pushNamed(SignUpScreen.routeName);
                     },
-                    child: FormButton(disabled: true, text: "로그인 하기")),
-              ],
-            ),
-          ],
+                    child: Container(
+                      height: 50,
+                      width: size.width - 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(width: 2, color: Colors.grey),
+                      ),
+                      child: Center(child: Text("Create Account")),
+                    ),
+                  ),
+                ),
+              ])),
+            ],
+          ),
         ),
       ),
     );
