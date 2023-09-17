@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
@@ -7,18 +8,20 @@ import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
 import 'package:twitter_clone/common/widget_builder.dart';
 import 'package:twitter_clone/features/authentication/password_screen.dart';
+import 'package:twitter_clone/features/authentication/viewmodel/signup_view_model.dart';
 
-class PinCodeVerifyScreen extends StatefulWidget {
+class PinCodeVerifyScreen extends ConsumerStatefulWidget {
   static const routeURL = "/pincode";
   static const routeName = "pincode";
 
   const PinCodeVerifyScreen({super.key});
 
   @override
-  State<PinCodeVerifyScreen> createState() => _PinCodeVerifyScreenState();
+  ConsumerState<PinCodeVerifyScreen> createState() =>
+      _PinCodeVerifyScreenState();
 }
 
-class _PinCodeVerifyScreenState extends State<PinCodeVerifyScreen> {
+class _PinCodeVerifyScreenState extends ConsumerState<PinCodeVerifyScreen> {
   Map<String, dynamic>? _args;
   String _pinCode = "";
   bool _isPincodeCompleted = false;
@@ -42,6 +45,9 @@ class _PinCodeVerifyScreenState extends State<PinCodeVerifyScreen> {
       setState(() {});
     });
     super.initState();
+
+    print(
+        "PinCodeVerifyScreen SsignupForm : ${ref.read(signUpForm.notifier).state}");
   }
 
   @override
@@ -51,6 +57,7 @@ class _PinCodeVerifyScreenState extends State<PinCodeVerifyScreen> {
   }
 
   void _onNext(BuildContext context) {
+    print("Update SsignupForm : ${ref.read(signUpForm.notifier).state}");
     context.pushNamed(PasswordScreen.routeName, queryParameters: _args ?? {});
   }
 

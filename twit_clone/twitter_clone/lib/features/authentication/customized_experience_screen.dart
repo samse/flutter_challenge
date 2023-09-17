@@ -1,27 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/common/sizes.dart';
 import 'package:twitter_clone/features/authentication/signup_screen.dart';
+import 'package:twitter_clone/features/authentication/viewmodel/signup_view_model.dart';
 
 import '../../common/widget_builder.dart';
 
-class CustomizedExperienceScreen extends StatefulWidget {
+class CustomizedExperienceScreen extends ConsumerStatefulWidget {
   static const routeURL = "/custExp";
   static const routeName = "custExp";
   const CustomizedExperienceScreen({super.key});
 
   @override
-  State<CustomizedExperienceScreen> createState() =>
+  ConsumerState<CustomizedExperienceScreen> createState() =>
       _CustomizedExperienceScreenState();
 }
 
 class _CustomizedExperienceScreenState
-    extends State<CustomizedExperienceScreen> {
+    extends ConsumerState<CustomizedExperienceScreen> {
   Map<String, dynamic>? _args;
   void _onNext(BuildContext context) {
     context.pushNamed(SignUpScreen.routeName, queryParameters: _args ?? {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    print(
+        "CustomizedExpScreen SsignupForm : ${ref.read(signUpForm.notifier).state}");
   }
 
   @override

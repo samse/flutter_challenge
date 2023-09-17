@@ -1,21 +1,25 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/features/authentication/interests_data.dart';
+import 'package:twitter_clone/features/authentication/viewmodel/signup_view_model.dart';
+import 'package:twitter_clone/features/home/home_screen.dart';
 
 import '../../common/sizes.dart';
 
-class InterestsScreen extends StatefulWidget {
+class InterestsScreen extends ConsumerStatefulWidget {
   static const routeURL = "/interests";
   static const routeName = "interests";
-  const InterestsScreen({super.key});
+
+  InterestsScreen({super.key});
 
   @override
-  State<InterestsScreen> createState() => _InterestsScreenState();
+  ConsumerState<InterestsScreen> createState() => _InterestsScreenState();
 }
 
 enum InterestsScreenMode {
@@ -23,12 +27,26 @@ enum InterestsScreenMode {
   detailSelect, // 세부관심사 선택 모드
 }
 
-class _InterestsScreenState extends State<InterestsScreen> {
+class _InterestsScreenState extends ConsumerState<InterestsScreen> {
   List<String> _list = [];
   List<bool> _selectedList = [];
   List<String> _selectedInterests = [];
   Map<String, bool> _selectedDetailInterests = {};
   InterestsScreenMode _interestsMode = InterestsScreenMode.interestSelect;
+  late String? _email;
+  late String? _password;
+
+  @override
+  void initState() {
+    super.initState();
+
+    print(
+        "InterestsScreen SsignupForm : ${ref.read(signUpForm.notifier).state}");
+    _email = ref.read(signUpForm.notifier).state["email"];
+    _password = ref.read(signUpForm.notifier).state["password"];
+    print("   email: $_email");
+    print("   password: $_password");
+  }
 
   void _onTapItem(BuildContext context, int i) {
     setState(() {
@@ -36,17 +54,38 @@ class _InterestsScreenState extends State<InterestsScreen> {
     });
   }
 
-  void _onNext() {
-    _selectedInterests = [];
-    print("_list length: ${_list.length}");
-    for (var i = 0; i < _list.length; i++) {
-      if (_selectedList[i] == true) {
-        _selectedInterests.add(_list[i]);
+  void _onNext() async {
+    if (_interestsMode == InterestsScreenMode.interestSelect) {
+      _selectedInterests = [];
+      print("_list length: ${_list.length}");
+      for (var i = 0; i < _list.length; i++) {
+        if (_selectedList[i] == true) {
+          _selectedInterests.add(_list[i]);
+        }
+      }
+      setState(() {
+        _interestsMode = InterestsScreenMode.detailSelect;
+      });
+    } else {
+      final email = ref.read(signUpForm.notifier).state["email"];
+      final password = ref.read(signUpForm.notifier).state["password"];
+
+      print("signUp start : $email/$password");
+
+      final res = await ref.read(singUpProvider.notifier).signIn(
+            context: context,
+            email: email,
+            password: password,
+          );
+      if (res) {
+        context.showAlert(
+            title: "",
+            message: "계정이 성공적으로 생성되었습니다.\n홈으로 이동합니다.",
+            positiveCallback: () {
+              context.goNamed(HomeScreen.routeName);
+            });
       }
     }
-    setState(() {
-      _interestsMode = InterestsScreenMode.detailSelect;
-    });
   }
 
   bool _isSelectedItem() {
