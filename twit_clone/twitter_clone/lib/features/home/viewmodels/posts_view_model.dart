@@ -21,17 +21,20 @@ class PostsViewModel extends AsyncNotifier<List<Post>> {
 
   Future<List<Post>> fetchPosts() async {
     const AsyncValue.loading();
-    // final res = mockDatas();
     final userId = _authRepo.user!.uid;
-    print("fetchPosts userId : $userId");
     final result = await _postRepo.fetchPosts(userId);
-    print(
-        "result : $result length=${result.size}, first item=${result.docs.first.data()}");
-    final res = result.docs.map((doc) => Post.fromJson(json: doc.data()));
-    print("res: $res");
-    print("result List : ${res.toList()}");
-    AsyncValue.data(res.toList());
-    return res.toList();
+    List<Post> posts = result.docs
+        .map((doc) => Post.fromJson(doc.id, json: doc.data()))
+        .toList();
+    for (final post in posts) {
+      final resImgs = await _postRepo.fetchImages(userId, post.postId!);
+      List<dynamic> imgs =
+          resImgs.docs.map((doc) => doc.data()["url"]).toList();
+      post.images = imgs.cast<String>();
+    }
+
+    AsyncValue.data(posts.toList());
+    return posts.toList();
   }
 }
 

@@ -1,6 +1,7 @@
 import '../../search/models/user.dart';
 
 class Post {
+  String? postId;
   String owner;
   String userName;
   String profileUrl;
@@ -14,6 +15,7 @@ class Post {
   List<String>? images;
 
   Post({
+    this.postId,
     required this.owner,
     required this.userName,
     required this.profileUrl,
@@ -26,8 +28,9 @@ class Post {
     this.images,
   });
 
-  Post.fromJson({required Map<String, dynamic> json})
-      : owner = json["owner"],
+  Post.fromJson(String postId, {required Map<String, dynamic> json})
+      : postId = postId,
+        owner = json["owner"],
         userName = json["userName"],
         profileUrl = json["profileUrl"],
         liked = false,
@@ -40,6 +43,7 @@ class Post {
 
   Map<String, dynamic> toJson() {
     return {
+      "postId": postId,
       "owner": owner,
       "userName": userName,
       "profileUrl": profileUrl,
