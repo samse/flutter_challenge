@@ -1,25 +1,37 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:twitter_clone/features/authentication/repo/authentication_repo.dart';
 
 import '../../search/models/user.dart';
 import '../models/post.dart';
+import '../repo/post_repo.dart';
 
 class PostsViewModel extends AsyncNotifier<List<Post>> {
+  late final PostRepo _postRepo;
+  late final AuthenticationRepository _authRepo;
+
   @override
   FutureOr<List<Post>> build() {
-    return List.empty();
+    _postRepo = ref.read(postRepo);
+    _authRepo = ref.read(authRepo);
+
+    return fetchPosts();
   }
 
   Future<List<Post>> fetchPosts() async {
-    print("loading");
     const AsyncValue.loading();
-    print("delay");
-    await Future.delayed(const Duration(milliseconds: 1000));
-    print("completed delay");
-    final res = mockDatas();
-    AsyncValue.data(res);
-    return res;
+    // final res = mockDatas();
+    final userId = _authRepo.user!.uid;
+    print("fetchPosts userId : $userId");
+    final result = await _postRepo.fetchPosts(userId);
+    print(
+        "result : $result length=${result.size}, first item=${result.docs.first.data()}");
+    final res = result.docs.map((doc) => Post.fromJson(json: doc.data()));
+    print("res: $res");
+    print("result List : ${res.toList()}");
+    AsyncValue.data(res.toList());
+    return res.toList();
   }
 }
 
@@ -46,6 +58,7 @@ List<Post> mockDatas() {
   posts.add(Post(
     // 이미지 여러장인 컨텐츠
     owner: '삼스',
+    userName: '삼스',
     profileUrl:
         "https://lh3.googleusercontent.com/a/AAcHTtcjRUI1oTPhL2dX2CJvgex4wnfnKzJtUMXNZTo8tDnjgOFF=s576-c-no",
     liked: true,
@@ -64,6 +77,7 @@ List<Post> mockDatas() {
   posts.add(Post(
     // 텍스트만 있는 컨텐츠
     owner: "Jinwha",
+    userName: 'Jinwha',
     profileUrl:
         "https://firebasestorage.googleapis.com/v0/b/nto-talk.appspot.com/o/avatars%2FZ0ORTzflj6f69BjO1OVO1Tx1xnf2?alt=media",
     liked: false,
@@ -76,6 +90,7 @@ List<Post> mockDatas() {
   posts.add(Post(
       // 이미지 여러장인 컨텐츠
       owner: '니꼬',
+      userName: '니꼬',
       profileUrl:
           "https://firebasestorage.googleapis.com/v0/b/nto-talk.appspot.com/o/avatars%2Foe6tky7rKsVchNPxJX8eihnC5o22?alt=media",
       liked: true,
@@ -100,6 +115,7 @@ List<Post> mockDatas() {
   posts.add(Post(
     // 이미지 여러장인 컨텐츠
     owner: 'Jinwha',
+    userName: 'Jinwha',
     profileUrl:
         "https://firebasestorage.googleapis.com/v0/b/nto-talk.appspot.com/o/avatars%2FZ0ORTzflj6f69BjO1OVO1Tx1xnf2?alt=media",
     liked: true,

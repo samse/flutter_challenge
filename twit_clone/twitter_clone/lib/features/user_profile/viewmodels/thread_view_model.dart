@@ -50,6 +50,7 @@ List<Thread> mockDatas() {
   posts.add(Post(
     // 이미지 여러장인 컨텐츠
     owner: '삼스',
+    userName: '삼스',
     profileUrl:
         "https://lh3.googleusercontent.com/a/AAcHTtcjRUI1oTPhL2dX2CJvgex4wnfnKzJtUMXNZTo8tDnjgOFF=s576-c-no",
     liked: true,
@@ -68,6 +69,7 @@ List<Thread> mockDatas() {
   posts.add(Post(
     // 텍스트만 있는 컨텐츠
     owner: "Jinwha",
+    userName: 'Jinwha',
     profileUrl:
         "https://firebasestorage.googleapis.com/v0/b/nto-talk.appspot.com/o/avatars%2FZ0ORTzflj6f69BjO1OVO1Tx1xnf2?alt=media",
     liked: false,
@@ -80,6 +82,7 @@ List<Thread> mockDatas() {
   posts.add(Post(
       // 이미지 여러장인 컨텐츠
       owner: '니꼬',
+      userName: '니꼬',
       profileUrl:
           "https://firebasestorage.googleapis.com/v0/b/nto-talk.appspot.com/o/avatars%2Foe6tky7rKsVchNPxJX8eihnC5o22?alt=media",
       liked: true,
@@ -104,6 +107,7 @@ List<Thread> mockDatas() {
   posts.add(Post(
     // 이미지 여러장인 컨텐츠
     owner: 'Jinwha',
+    userName: 'Jinwha',
     profileUrl:
         "https://firebasestorage.googleapis.com/v0/b/nto-talk.appspot.com/o/avatars%2FZ0ORTzflj6f69BjO1OVO1Tx1xnf2?alt=media",
     liked: true,

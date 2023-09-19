@@ -121,14 +121,14 @@ class _PostViewState extends ConsumerState<PostView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ref.watch(configProvider.notifier).isDarkMode
-                        ? Text("DarkMode")
-                        : Text("LightMode"),
+                    // ref.watch(configProvider.notifier).isDarkMode
+                    //     ? Text("DarkMode")
+                    //     : Text("LightMode"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          widget.post.owner,
+                          widget.post.userName,
                           style: context.postTitleText,
                         ),
                         Row(
