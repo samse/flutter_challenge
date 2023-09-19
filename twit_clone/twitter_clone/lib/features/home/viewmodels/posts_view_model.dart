@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/features/authentication/repo/authentication_repo.dart';
@@ -35,6 +36,21 @@ class PostsViewModel extends AsyncNotifier<List<Post>> {
 
     AsyncValue.data(posts.toList());
     return posts.toList();
+  }
+
+  Future<void> uploadImage(File file) async {
+    // state = const AsyncValue.loading();
+    final fileName = ref.read(authRepo).user!.uid;
+    await _postRepo.uploadImage(file, fileName);
+    // await _postRepo.onImageUpload();
+//     // state = await AsyncValue.guard(() async {
+//     //   await _postRepo.uploadImage(file, fileName);
+//     // });
+//     state = await AsyncValue.guard(() async {
+//       await _postRepo.uploadImage(file, fileName);
+//       await _postRepo.onImageUpload();
+// //      await ref.read(_postRepo.notifier).onImageUpload();
+//     });
   }
 }
 
