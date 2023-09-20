@@ -14,18 +14,33 @@ class PostRepo {
     return _db.collection("posts").where("owner", isEqualTo: userId).get();
   }
 
-  Future<QuerySnapshot<Map<String, dynamic>>> fetchImages(
-      String userId, String postId) async {
-    return _db.collection("posts").doc(postId).collection("images").get();
-  }
+  // Future<QuerySnapshot<Map<String, dynamic>>> fetchImages(
+  //     String userId, String postId) async {
+  //   return _db.collection("posts").doc(postId).collection("images").get();
+  // }
 
   Future<DocumentReference> addPost(Post post) async {
-    return await _db.collection("post").add(post.toJson());
+    return await _db.collection("posts").add(post.toJson());
   }
 
-  Future<void> uploadImage(File file, String fileName) async {
+  Future<void> updatePost(Post post) async {
+    print("updatePost post -> ${post.toString()}");
+    await _db.collection("posts").doc(post.postId).set(post.toJson());
+  }
+
+  Future<String?> uploadImage(File file, String fileName) async {
+    print("uploadImage fileName:$fileName, file:$file ");
     final fileRef = _storage.ref().child("images/$fileName");
-    await fileRef.putFile(file);
+    print("uploadImage fileRef: $fileRef");
+    try {
+      await fileRef.putFile(file);
+      final imageUrl = await fileRef.getDownloadURL();
+      print("image url: $imageUrl");
+      return imageUrl;
+    } on Exception catch (_, e) {
+      print("Upload Failed : ${e.toString()}");
+    }
+    return null;
   }
 
   Future<void> onImageUpload() async {}

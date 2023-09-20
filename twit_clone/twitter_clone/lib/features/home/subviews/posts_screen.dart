@@ -9,6 +9,7 @@ import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/viewmodels/posts_view_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../common/sizes.dart';
 import '../../../config/viewmodel/config_view_model.dart';
@@ -38,23 +39,37 @@ class _PostsScreenState extends ConsumerState<PostsScreen> {
     setState(() {});
   }
 
+  void _onVisibilityChanged(VisibilityInfo info) async {
+    if (!mounted) return;
+    print("visibilityInfo: ${info.visibleFraction}");
+    if (info.visibleFraction == 1.0) {
+      Future(() async {
+        fetchData();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // title: Text("Home"),
-        centerTitle: true,
-        title: Transform.rotate(
-          angle: 1.5,
-          child: const FaIcon(
-            FontAwesomeIcons.at,
-            size: Sizes.size40,
+    return VisibilityDetector(
+      key: Key("post_screen"),
+      onVisibilityChanged: _onVisibilityChanged,
+      child: Scaffold(
+        appBar: AppBar(
+          // title: Text("Home"),
+          centerTitle: true,
+          title: Transform.rotate(
+            angle: 1.5,
+            child: const FaIcon(
+              FontAwesomeIcons.at,
+              size: Sizes.size40,
+            ),
           ),
         ),
+        body: _posts.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            : buildPosts(context),
       ),
-      body: _posts.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : buildPosts(context),
     );
   }
 
@@ -91,8 +106,7 @@ class _PostViewState extends ConsumerState<PostView> {
     double height = 60;
     if (widget.post.content != null && widget.post.content!.isNotEmpty)
       height = height + 50;
-    if (widget.post.images != null && widget.post.images!.isNotEmpty)
-      height = height + imgCellHeight;
+    if (widget.post.image != null) height = height + imgCellHeight;
     return height;
   }
 
@@ -109,7 +123,7 @@ class _PostViewState extends ConsumerState<PostView> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   buildAvatar(context, widget.post.profileUrl),
-                  Expanded(
+                  const Expanded(
                     child: VerticalDivider(),
                   ),
                 ],
@@ -154,9 +168,8 @@ class _PostViewState extends ConsumerState<PostView> {
                         onOpen: (link) => _launchURL(context, link.url),
                         linkStyle: context.linkText,
                       ),
-                    if (widget.post.images != null &&
-                        widget.post.images!.isNotEmpty)
-                      buildImageSlide(context, widget.post.images!),
+                    if (widget.post.image != null)
+                      buildImageSlide(context, [widget.post.image!]),
                     buildBottomIcons(context),
                   ],
                 ),

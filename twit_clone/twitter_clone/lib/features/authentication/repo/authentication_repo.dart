@@ -7,6 +7,9 @@ class AuthenticationRepository {
 
   bool get isLoggedIn => (user != null);
   User? get user => _firebaseAuth.currentUser;
+  String get userName => "Samse"; //@@ 고정.. User tabled이 필요함.
+  String get profileUrl =>
+      "https://lh3.googleusercontent.com/a/AAcHTtcjRUI1oTPhL2dX2CJvgex4wnfnKzJtUMXNZTo8tDnjgOFF=s576-c-no";
 
   // 인증상태 변경 모니터
   Stream<User?> authStateChanges() => _firebaseAuth.authStateChanges();

@@ -9,10 +9,12 @@ import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/nav_item.dart';
 import 'package:twitter_clone/config/viewmodel/config_view_model.dart';
 import 'package:twitter_clone/features/activities/activities_screen.dart';
+import 'package:twitter_clone/features/authentication/repo/authentication_repo.dart';
 import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/models/post.dart';
 import 'package:twitter_clone/features/home/subviews/attach_file_screen.dart';
 import 'package:twitter_clone/features/home/subviews/posts_screen.dart';
+import 'package:twitter_clone/features/home/viewmodels/posts_view_model.dart';
 import 'package:twitter_clone/features/user_profile/user_profile_screen.dart';
 
 import '../../common/sizes.dart';
@@ -76,6 +78,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  /// 서버에 전송
+  /// content -> image
+  bool _isUploading = false;
+  void _onPost() async {
+    if (text.isEmpty) {
+      print("내용을 입력하세요.");
+      return;
+    }
+    if (_isUploading) return;
+
+    setState(() {
+      _isUploading = true;
+    });
+
+    final _authRepo = ref.read(authRepo);
+    Post post = Post(
+        owner: _authRepo.user!.uid,
+        userName: _authRepo.userName,
+        profileUrl: _authRepo.profileUrl,
+        hours: '1h 10m',
+        content: text);
+    final postId = await ref.read(postsProvider.notifier).sendPost(post);
+    if (_attachFile != null) {
+      final fileName =
+          "${postId}+${DateTime.now().millisecondsSinceEpoch}"; //ref.read(authRepo).user!.uid;
+
+      final imageUrl = await ref
+          .read(postsProvider.notifier)
+          .uploadImage(_attachFile!, fileName);
+
+      post.postId = postId;
+      post.image = imageUrl;
+      await ref.read(postsProvider.notifier).updatePost(post);
+    } else {
+      post.postId = postId;
+      await ref.read(postsProvider.notifier).updatePost(post);
+    }
+    _attachFile = null;
+    text = "";
+    _isUploading = false;
+    context.pop();
+  }
+
+  /// POST 추가하기
   void _onTapPost(BuildContext context) {
     print("_onTapPost text isEmpty => $text : ${text.isEmpty}");
     showModalBottomSheet(
@@ -249,14 +295,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           style: context.normal
                               .copyWith(color: Colors.grey.shade600),
                         ),
-                        Text(
-                          "Post",
-                          style: context.linkText!.copyWith(
-                            fontSize: Sizes.size20,
-                            color: text.isEmpty
-                                ? Colors.blue.shade200
-                                : Colors.blue,
-                          ),
+                        GestureDetector(
+                          onTap: _onPost,
+                          child: _isUploading
+                              ? CircularProgressIndicator()
+                              : Text(
+                                  "Post",
+                                  style: context.linkText!.copyWith(
+                                    fontSize: Sizes.size20,
+                                    color: text.isEmpty
+                                        ? Colors.blue.shade200
+                                        : Colors.blue,
+                                  ),
+                                ),
                         ),
                       ],
                     ),

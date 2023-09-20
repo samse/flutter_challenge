@@ -58,6 +58,7 @@ dependencies:
   firebase_messaging: ^14.6.7
   firebase_dynamic_links: ^5.3.5
   firebase_crashlytics: ^3.3.5
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:

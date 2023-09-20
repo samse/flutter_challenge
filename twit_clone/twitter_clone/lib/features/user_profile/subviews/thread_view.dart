@@ -77,9 +77,8 @@ class ThreadView extends StatelessWidget {
         thread.post!.content != null &&
         thread.post!.content!.isNotEmpty) height = height + 50;
     if (thread.post != null) height = height + postCellHeight;
-    if (thread.post != null &&
-        thread.post!.images != null &&
-        thread.post!.images!.isNotEmpty) height = height + imgHeight;
+    if (thread.post != null && thread.post!.image != null)
+      height = height + imgHeight;
     return height;
   }
 
@@ -188,8 +187,8 @@ class ThreadView extends StatelessWidget {
               child: Text(post.content!),
             ),
           Gaps.v14,
-          if (post.images != null && post.images!.length > 0)
-            buildImageSlide(context, post.images!, imgHeight),
+          if (post.image != null)
+            buildImageSlide(context, [post.image!], imgHeight),
           if (post.replyUser != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),

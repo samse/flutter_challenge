@@ -12,7 +12,7 @@ class Post {
   String hours;
   List<User>? replyUser;
   String? content;
-  List<String>? images;
+  String? image;
 
   Post({
     this.postId,
@@ -25,11 +25,11 @@ class Post {
     this.likeCount,
     this.replyUser,
     this.content,
-    this.images,
+    this.image,
   });
 
   Post.fromJson(String postId, {required Map<String, dynamic> json})
-      : postId = postId,
+      : postId = postId ?? "",
         owner = json["owner"],
         userName = json["userName"],
         profileUrl = json["profileUrl"],
@@ -39,18 +39,18 @@ class Post {
         replyUser = [],
         content = json["content"] ?? "",
         hours = json["hours"],
-        images = [json["image"]] ?? [];
+        image = json["image"] ?? "";
 
   Map<String, dynamic> toJson() {
     return {
-      "postId": postId,
+      "postId": postId ?? "",
       "owner": owner,
       "userName": userName,
       "profileUrl": profileUrl,
       "likeCount": likeCount ?? 0,
       "content": content ?? "",
       "hours": hours,
-      "images": images ?? [],
+      "image": image ?? ""
     };
   }
 
