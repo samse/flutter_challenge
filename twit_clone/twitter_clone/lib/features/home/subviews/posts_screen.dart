@@ -3,16 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:twitter_clone/app.dart';
 import 'package:twitter_clone/common/gaps.dart';
 import 'package:twitter_clone/features/common/avatar.dart';
 import 'package:twitter_clone/features/home/viewmodels/posts_view_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../../common/sizes.dart';
-import '../../../config/viewmodel/config_view_model.dart';
 import '../../search/models/user.dart';
 import '../models/post.dart';
 
@@ -25,62 +22,42 @@ class PostsScreen extends ConsumerStatefulWidget {
 }
 
 class _PostsScreenState extends ConsumerState<PostsScreen> {
-  List<Post> _posts = [];
-
   @override
   void initState() {
     super.initState();
-    fetchData();
-  }
-
-  void fetchData() async {
-    _posts = await ref.read(postsProvider.notifier).fetchPosts();
-    print("Posts: $_posts");
-    setState(() {});
-  }
-
-  void _onVisibilityChanged(VisibilityInfo info) async {
-    if (!mounted) return;
-    print("visibilityInfo: ${info.visibleFraction}");
-    if (info.visibleFraction == 1.0) {
-      Future(() async {
-        fetchData();
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return VisibilityDetector(
-      key: Key("post_screen"),
-      onVisibilityChanged: _onVisibilityChanged,
-      child: Scaffold(
-        appBar: AppBar(
-          // title: Text("Home"),
-          centerTitle: true,
-          title: Transform.rotate(
-            angle: 1.5,
-            child: const FaIcon(
-              FontAwesomeIcons.at,
-              size: Sizes.size40,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        // title: Text("Home"),
+        centerTitle: true,
+        title: Transform.rotate(
+          angle: 1.5,
+          child: const FaIcon(
+            FontAwesomeIcons.at,
+            size: Sizes.size40,
           ),
         ),
-        body: _posts.isEmpty
-            ? Center(child: CircularProgressIndicator())
-            : buildPosts(context),
       ),
+      body: ref.watch(postListProvider).when(
+          data: (data) {
+            return buildPosts(context, data);
+          },
+          error: (obj, stackTrace) {},
+          loading: () => const Center(child: CircularProgressIndicator())),
     );
   }
 
-  Widget buildPosts(BuildContext context) {
+  Widget buildPosts(BuildContext context, List<Post> posts) {
     return Container(
       height: MediaQuery.of(context).size.height,
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            for (var post in _posts) PostView(post: post),
+            for (var post in posts) PostView(post: post),
           ],
         ),
       ),
@@ -112,11 +89,13 @@ class _PostViewState extends ConsumerState<PostView> {
 
   @override
   Widget build(BuildContext context) {
+    print("Real Build Post : ${widget.post.postId}");
+
     return Column(
       children: [
         Row(
           children: [
-            Container(
+            SizedBox(
               width: 60,
               height: _leftCellHeight,
               child: Column(
