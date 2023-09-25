@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum MoodType {
   smile_1,
   smile_2,
@@ -14,4 +16,12 @@ class PostModel {
   final String comment;
   int? createdAt;
   PostModel({required this.moodType, required this.comment, this.createdAt});
+
+  Icon icon() {
+    return PostModel.moodIcon(moodType);
+  }
+
+  static Icon moodIcon(MoodType type) {
+    return Icon(Icons.person);
+  }
 }
