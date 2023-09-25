@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 final routerProvider = Provider((ref) {
   return GoRouter(
-      initialLocation: "/signUp",
+      initialLocation: "/home",
       redirect: (context, state) {
         return null;
       },
