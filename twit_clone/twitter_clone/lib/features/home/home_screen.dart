@@ -99,21 +99,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         profileUrl: _authRepo.profileUrl,
         hours: '1h 10m',
         content: text);
-    final postId = await ref.read(postsProvider.notifier).sendPost(post);
+    final postId = await ref.read(postProvider.notifier).sendPost(post);
     if (_attachFile != null) {
       final fileName =
           "${postId}+${DateTime.now().millisecondsSinceEpoch}"; //ref.read(authRepo).user!.uid;
 
       final imageUrl = await ref
-          .read(postsProvider.notifier)
+          .read(postProvider.notifier)
           .uploadImage(_attachFile!, fileName);
 
       post.postId = postId;
       post.image = imageUrl;
-      await ref.read(postsProvider.notifier).updatePost(post);
+      await ref.read(postProvider.notifier).updatePost(post);
     } else {
       post.postId = postId;
-      await ref.read(postsProvider.notifier).updatePost(post);
+      await ref.read(postProvider.notifier).updatePost(post);
     }
     _attachFile = null;
     text = "";
