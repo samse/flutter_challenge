@@ -26,6 +26,9 @@ class AuthInputField extends StatelessWidget {
         contentPadding: const EdgeInsets.only(top: 10, left: 20),
         hintText: hintText,
         hintStyle: hintTextStyle,
+        filled: true,
+        fillColor: Colors.white,
+        focusColor: Colors.white,
         enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Colors.black,

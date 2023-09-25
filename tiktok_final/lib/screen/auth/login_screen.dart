@@ -80,7 +80,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.colors.primary,
       appBar: AppBar(
+        backgroundColor: context.colors.primary,
         centerTitle: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
