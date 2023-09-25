@@ -54,7 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: Colors.black, width: 2)),
+            border:
+                const Border(top: BorderSide(color: Colors.black, width: 2)),
             color: context.colors.primary,
           ),
           child: const TabBar(

@@ -1,3 +1,4 @@
+import 'package:final_prj/common/widget/fancy_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,21 +6,19 @@ import 'common/sizes.dart';
 
 extension UiExtension on BuildContext {
   void showAlert(
-      {required String title,
-      required String message,
-      required Function positiveCallback}) {
+      {String? title, required String message, Function? positiveCallback}) {
     showDialog(
       context: this,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
+          title: title != null ? Text(title!) : null,
           content: Text(message),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 // 원하는 작업 수행
                 Navigator.of(context).pop(); // AlertDialog 닫기
-                positiveCallback();
+                if (positiveCallback != null) positiveCallback();
               },
               child: Text('확인'),
             ),
