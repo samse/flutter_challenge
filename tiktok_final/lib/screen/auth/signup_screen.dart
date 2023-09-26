@@ -46,50 +46,69 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     _passwordController.dispose();
   }
 
+  bool isCurrUserLoggedIn(String email) {
+    final _authRepo = ref.read(authRepo);
+    if (_authRepo.user != null) {
+      if (_authRepo.user!.email == email && _authRepo.user!.emailVerified) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   void _onSignUp(BuildContext context) async {
     if (!_isEmailValid() || !_isPasswordValid()) {
       context.showAlert(
-        message: "Email or password not valid!",
+        message: "Email or password are not valid!",
       );
       return;
     }
-    if (ref.read(authRepo).isLoggedIn == false) {
-      if (ref.read(authRepo).user == null) {
-        // auth 미등록
-        if (await ref
-                .read(singUpProvider.notifier)
-                .signUp(context, _email, _password) ==
-            false) {
-          // 등록 실패 시
-          return;
-        } else {
-          if (context.mounted) {
-            bool ret = await ref
-                .read(singUpProvider.notifier)
-                .sendEmailVerification(context);
-            if (ret) {
-              if (context.mounted) {
-                context.showAlert(
-                    message:
-                        "가입이 성공적으로 완료되었습니다. 인증메일이 전송되었으니 인증 확인 후 다시 이용해주세요!",
-                    positiveCallback: () =>
-                        context.goNamed(LoginScreen.routeName));
-              }
-            }
-          }
-        }
-      }
+
+    print("current user: ${ref.read(authRepo).user!.email}");
+    final _authRepo = ref.read(authRepo);
+    if (_authRepo.user == null) {
+      // 가입 -> 이메일 전송
+      _registerUser();
     } else {
-      if (ref.read(authRepo).user!.emailVerified == false) {
-        bool ret = await ref
-            .read(singUpProvider.notifier)
-            .sendEmailVerification(context);
-        if (ret) {
-          if (context.mounted) {
-            context.showAlert(
-                message: "가입은 되었지만 이메일인증이 안되었습니다. 인증메일이 전송되었으니 확인 후 다시 이용해주세요!",
-                positiveCallback: () => context.goNamed(LoginScreen.routeName));
-          }
+      if (_authRepo.user!.email == _email) {
+        if (_authRepo.user!.emailVerified == false) {
+          // 이메일 전송
+          _sendEmail();
+        } else {
+          // 동일 메일로 이메일인증까지 완료돤 유저 -> 로그인으로 이동
+          context.showAlert(
+              message: "이미 가입된 계정입니다. 로그인으로 이동합니다.",
+              positiveCallback: () {
+                context.go(LoginScreen.routeName);
+              });
+        }
+      } else {
+        // 현재 로그인유저와 가입유저가 다름
+        // 가입 -> 이메일 전송
+        _registerUser();
+      }
+    }
+  }
+
+  void _registerUser() async {
+    final res = await ref
+        .read(singUpProvider.notifier)
+        .signUp(context, _email, _password);
+    if (res) {
+      _sendEmail();
+    }
+  }
+
+  void _sendEmail() async {
+    if (context.mounted) {
+      bool ret = await ref
+          .read(singUpProvider.notifier)
+          .sendEmailVerification(context);
+      if (ret) {
+        if (context.mounted) {
+          context.showAlert(
+              message: "가입이 성공적으로 완료되었습니다. 인증메일이 전송되었으니 인증 확인 후 다시 이용해주세요!",
+              positiveCallback: () => context.goNamed(LoginScreen.routeName));
         }
       }
     }
@@ -191,6 +210,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
             ),
           ),
+          if (ref.watch(singUpProvider).isLoading)
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.black12,
+              child: const Center(
+                child: CircularProgressIndicator.adaptive(
+                    strokeWidth: 3, backgroundColor: Colors.red),
+              ),
+            ),
         ],
       ),
     );

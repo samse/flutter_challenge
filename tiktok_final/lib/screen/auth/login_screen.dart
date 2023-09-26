@@ -55,6 +55,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
     if (res) {
       if (ref.read(authRepo).user?.emailVerified == false) {
+        print("email not verified!!!");
         if (context.mounted) {
           bool ret = await ref
               .read(singUpProvider.notifier)

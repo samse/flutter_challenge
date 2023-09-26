@@ -14,13 +14,18 @@ extension UiExtension on BuildContext {
           title: title != null ? Text(title!) : null,
           content: Text(message),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                // 원하는 작업 수행
+            GestureDetector(
+              onTap: () {
                 Navigator.of(context).pop(); // AlertDialog 닫기
                 if (positiveCallback != null) positiveCallback();
               },
-              child: Text('확인'),
+              child: Container(
+                height: 40,
+                child: FancyButton(
+                    text: "확인",
+                    style: context.buttonTitle,
+                    color: context.colors.primary),
+              ),
             ),
           ],
         );

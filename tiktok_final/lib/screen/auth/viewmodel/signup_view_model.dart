@@ -46,7 +46,10 @@ class SignUpViewModel extends AsyncNotifier<void> {
     state = await AsyncValue.guard(() async {
       final userCredential = await _authRepo.signIn(email, password);
     });
+    print("state : $state");
     if (state.hasError) {
+      print("error : ${state.error as FirebaseException}");
+      print("code : ${(state.error as FirebaseException).code}");
       if (context.mounted) {
         context.showAlert(
             title: "",
@@ -75,7 +78,8 @@ class SignUpViewModel extends AsyncNotifier<void> {
       if (context.mounted) {
         context.showAlert(
             title: "",
-            message: state.error.toString(),
+            message:
+                (state.error as FirebaseException).message ?? "firebase error",
             positiveCallback: () {});
       }
       return false;
