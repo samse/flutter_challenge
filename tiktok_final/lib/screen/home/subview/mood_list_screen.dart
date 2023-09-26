@@ -1,4 +1,5 @@
 import 'package:final_prj/app.dart';
+import 'package:final_prj/screen/home/viewmodel/post_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,38 +9,86 @@ import '../model/post_model.dart';
 import '../widget/post_view.dart';
 
 class MoodListScreen extends ConsumerStatefulWidget {
-  const MoodListScreen({Key? key}) : super(key: key);
+  final TabController tabController;
+  const MoodListScreen(this.tabController, {Key? key}) : super(key: key);
 
   @override
   ConsumerState<MoodListScreen> createState() => _MoodListScreenState();
 }
 
 class _MoodListScreenState extends ConsumerState<MoodListScreen> {
-  List<PostModel> posts = [
-    PostModel(
-        moodType: MoodType.smile_1,
-        comment: '안녕 오늘은 날씨가 이래서 그런지 꼬물꼬물.. 느낌이 아주 이상하네',
-        createdAt: (DateTime.now().millisecondsSinceEpoch - 1987219)),
-    PostModel(
-        moodType: MoodType.smile_1,
-        comment: '안녕 오늘은 날씨가 ',
-        createdAt: (DateTime.now().millisecondsSinceEpoch - 1987219))
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.amber.shade100,
-      body: Column(
-        children: [
-          Gaps.v40,
-          for (final post in posts)
-            Post(
-              postModel: post,
-              style: context.normal,
+      body: ref.watch(postListProvider).when(
+        loading: () {
+          return const Center(
+            child: CircularProgressIndicator.adaptive(
+              strokeWidth: 2,
+              backgroundColor: Colors.red,
             ),
-        ],
+          );
+        },
+        error: (Object error, StackTrace stackTrace) {
+          return Container(
+            child: Text(stackTrace.toString()),
+          );
+        },
+        data: (List<PostModel> posts) {
+          return ListView.separated(
+              itemBuilder: (context, index) {
+                final post = posts[index];
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Post(
+                    postModel: post,
+                    style: context.normal,
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) => Gaps.v24,
+              itemCount: posts.length);
+        },
       ),
+      // body: Column(
+      //   children: [
+      //     Gaps.v40,
+      //     ref.watch(postListProvider).when(
+      //         data: (posts) {
+      //           if (posts.length == 0) {
+      //             return GestureDetector(
+      //                 onTap: () {
+      //                   widget.tabController.animateTo(1);
+      //                 },
+      //                 child: Center(child: Text("등록된 포스팅이 없어요! 등록해주세요.")));
+      //           }
+      //           print("Post 개수 : ${posts.length}");
+      //           return ListView.separated(
+      //               itemBuilder: (context, index) {
+      //                 return Container();
+      //               },
+      //               separatorBuilder: (context, index) => Gaps.v10,
+      //               itemCount: posts.length);
+      //           // return ListView.separated(
+      //           //     itemBuilder: (context, index) {
+      //           //       final post = posts[index];
+      //           //       print("  ${index + 1}. ${post.moodType} ${post.comment}");
+      //           //       // return Post(
+      //           //       //   postModel: post,
+      //           //       //   style: context.normal,
+      //           //       // );
+      //           //       return Container(
+      //           //         child: Text(post.moodType),
+      //           //       );
+      //           //     },
+      //           //     separatorBuilder: (context, index) => Gaps.v10,
+      //           //     itemCount: posts.length);
+      //         },
+      //         error: (obj, stack) => Container(),
+      //         loading: () => CircularProgressIndicator.adaptive())
+      //   ],
+      // ),
     );
   }
 }

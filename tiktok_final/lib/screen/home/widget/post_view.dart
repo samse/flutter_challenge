@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../common/gaps.dart';
 import '../model/post_model.dart';
@@ -12,13 +13,13 @@ class Post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("post: $postModel");
-
     return Padding(
       padding: const EdgeInsets.only(left: 40, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            width: MediaQuery.of(context).size.width,
             padding:
                 const EdgeInsets.only(left: 30, right: 20, top: 10, bottom: 10),
             decoration: BoxDecoration(
@@ -36,15 +37,11 @@ class Post extends StatelessWidget {
                   ),
                 ]),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      "Mood:  ",
-                      style: style,
-                    ),
-                    moodIcon(postModel.moodType),
-                  ],
+                Text(
+                  "Mood: ${postModel.moodType}",
+                  style: style,
                 ),
                 Text(
                   postModel.comment,
@@ -63,20 +60,26 @@ class Post extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-          Gaps.v32,
         ],
       ),
     );
   }
 
-  Icon moodIcon(MoodType type) {
-    //TODO
-    return Icon(Icons.person);
-  }
-
   String timeWritten(int createdAt) {
-    //TODO
-    print("timeWritten");
-    return "20m ago";
+    final ONEMIN = 60 * 1000;
+    final ONEHOUR = ONEMIN * 60;
+    final ONEDAY = ONEHOUR * 24;
+    int diff = DateTime.now().millisecondsSinceEpoch - createdAt;
+    print("diff : $diff");
+    if (diff >= ONEDAY) {
+      return DateFormat("d일 H시 m분 전")
+          .format(DateTime.fromMillisecondsSinceEpoch(diff));
+    } else if (diff >= ONEHOUR) {
+      return DateFormat("H시 m분 전")
+          .format(DateTime.fromMillisecondsSinceEpoch(diff));
+    } else {
+      return DateFormat("m분 전")
+          .format(DateTime.fromMillisecondsSinceEpoch(diff));
+    }
   }
 }

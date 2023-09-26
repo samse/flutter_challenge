@@ -1,27 +1,42 @@
 import 'package:flutter/material.dart';
 
-enum MoodType {
-  smile_1,
-  smile_2,
-  smile_3,
-  shy,
-  eyedrop,
-  angry,
-  freakedout,
-  obite
-}
-
 class PostModel {
-  final MoodType moodType;
+  static List<String> MoodTypes = [
+    "😄",
+    "😲",
+    "😍",
+    "😳",
+    "😭",
+    "😡",
+    "🤪",
+    "😬"
+  ];
+
+  final String moodType;
   final String comment;
+  final String owner;
+  String? postId;
   int? createdAt;
-  PostModel({required this.moodType, required this.comment, this.createdAt});
+  PostModel(
+      {required this.owner,
+      required this.moodType,
+      required this.comment,
+      this.createdAt});
 
-  Icon icon() {
-    return PostModel.moodIcon(moodType);
-  }
+  PostModel.fromJson(String id, {required Map<String, dynamic> json})
+      : moodType = json["moodType"],
+        comment = json["comment"],
+        owner = json["owner"],
+        postId = id,
+        createdAt = json["createdAt"] ?? 0;
 
-  static Icon moodIcon(MoodType type) {
-    return Icon(Icons.person);
+  Map<String, dynamic> toJson() {
+    return {
+      "moodType": moodType,
+      "comment": comment,
+      "owner": owner,
+      "postId": postId ?? "",
+      "createdAt": createdAt ?? 0,
+    };
   }
 }
