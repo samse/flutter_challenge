@@ -42,7 +42,7 @@ class _BlockState extends State<Block> with SingleTickerProviderStateMixin {
       children: [
         PositionedTransition(
           rect: RelativeRectTween(
-            begin: const RelativeRect.fromLTRB(0, 0, 0, 0),
+            begin: RelativeRect.fromLTRB(10, 10, 0, 0),
             end: nextRect(),
           ).animate(_controller),
           child: Center(
