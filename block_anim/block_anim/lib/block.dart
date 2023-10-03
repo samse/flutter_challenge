@@ -51,9 +51,10 @@ class _BlockState extends State<Block> with SingleTickerProviderStateMixin {
               child: ScaleTransition(
                 scale: Tween(begin: nextScale(), end: nextScale())
                     .animate(_controller),
-                child: RotationTransition(
-                  turns: Tween(begin: nextAngle(), end: nextAngle())
-                      .animate(_controller),
+                child: Transform.rotate(
+                  angle: nextAngle(),
+                  // turns: Tween(begin: nextAngle(), end: nextAngle())
+                  //     .animate(_controller),
                   child: Container(
                     width: widget.size.width,
                     height: widget.size.height,
@@ -71,16 +72,18 @@ class _BlockState extends State<Block> with SingleTickerProviderStateMixin {
   }
 
   RelativeRect nextRect() {
-    int x = random.nextInt(20);
-    int y = random.nextInt(20);
-    return RelativeRect.fromLTRB(x as double, y as double, 0, 0);
+    double x = random.nextDouble() * 20.0;
+    double y = random.nextDouble() * 20.0;
+    return RelativeRect.fromLTRB(x, y, 0, 0);
   }
 
   double nextScale() {
     return max(random.nextDouble(), 0.6);
   }
 
+  // 최대 90도의 랜덤 각도 리턴
   double nextAngle() {
-    return min(random.nextDouble(), 0.3);
+    // return min(random.nextDouble(), 0.3);
+    return (random.nextInt(300) * 3.14159265359) / 180;
   }
 }
