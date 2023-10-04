@@ -1,5 +1,6 @@
 import 'package:final_prj/app.dart';
 import 'package:final_prj/screen/home/viewmodel/post_viewmodel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,6 +18,44 @@ class MoodListScreen extends ConsumerStatefulWidget {
 }
 
 class _MoodListScreenState extends ConsumerState<MoodListScreen> {
+  void _deleteItem(PostModel post) {
+    ref.read(postProvider.notifier).removePost(post);
+  }
+
+  void _onItemSelected(BuildContext context, PostModel post) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoActionSheet(
+          title: Text('Delete note'),
+          message: Text("Are you sure you want to do this?"),
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: const Text(
+                'Delete',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                _deleteItem(post);
+              },
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.blue),
+            ),
+            onPressed: () {
+              // 취소 버튼 선택 시 실행되는 코드
+              Navigator.pop(context);
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,11 +78,14 @@ class _MoodListScreenState extends ConsumerState<MoodListScreen> {
           return ListView.separated(
               itemBuilder: (context, index) {
                 final post = posts[index];
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Post(
-                    postModel: post,
-                    style: context.normal,
+                return GestureDetector(
+                  onLongPress: () => _onItemSelected(context, post),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Post(
+                      postModel: post,
+                      style: context.normal,
+                    ),
                   ),
                 );
               },

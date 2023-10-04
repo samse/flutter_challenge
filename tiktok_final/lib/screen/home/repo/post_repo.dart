@@ -17,6 +17,10 @@ class PostRepository {
     return _db.collection(TABLE_NAME).doc(post.postId).set(post.toJson());
   }
 
+  Future<void> remove(PostModel post) async {
+    _db.collection(TABLE_NAME).doc(post.postId).delete();
+  }
+
   Future<QuerySnapshot<Map<String, dynamic>>> fetchPost(String userId) async {
     return _db.collection(TABLE_NAME).where("owner", isEqualTo: userId).get();
   }

@@ -26,6 +26,12 @@ class PostViewModel extends AsyncNotifier<void> {
       await _postRepo.updateRoom(post);
     });
   }
+
+  Future<void> removePost(PostModel post) async {
+    await AsyncValue.guard(() async {
+      await _postRepo.remove(post);
+    });
+  }
 }
 
 final postProvider = AsyncNotifierProvider(() => PostViewModel());

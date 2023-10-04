@@ -63,8 +63,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       );
       return;
     }
-
-    print("current user: ${ref.read(authRepo).user!.email}");
+    print("register : $_email /$_password");
+    // print("${ref.read(authRepo).user}");
+    // print("current user: ${ref.read(authRepo).user!.email}");
     final _authRepo = ref.read(authRepo);
     if (_authRepo.user == null) {
       // 가입 -> 이메일 전송

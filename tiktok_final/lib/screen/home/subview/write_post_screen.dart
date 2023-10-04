@@ -22,12 +22,19 @@ class _WritePostScreenState extends ConsumerState<WritePostScreen> {
   final TextEditingController _controller = TextEditingController();
   String _comment = "";
   String _mood = "";
+  bool isKeyboardVisible = false;
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(() {
       _comment = _controller.text;
+    });
+    _focusNode.addListener(() {
+      setState(() {
+        isKeyboardVisible = _focusNode.hasFocus;
+        print("isKeyboardVisible : $isKeyboardVisible");
+      });
     });
   }
 
@@ -75,108 +82,112 @@ class _WritePostScreenState extends ConsumerState<WritePostScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Gaps.v40,
-                Text(
-                  "How do you feel?",
-                  style: context.textTheme.headlineMedium!
-                      .copyWith(fontWeight: FontWeight.w600),
-                ),
-                Gaps.v12,
-                Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                      color: Colors.amber.shade100,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.black, width: 2),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black, // 그림자 색상
-                          spreadRadius: 0, // 그림자 확산 범위
-                          blurRadius: 1, // 그림자 흐림 정도
-                          offset: Offset(-2, 4), // 그림자 위치 (x, y)
-                        )
-                      ]),
-                  child: TextField(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    maxLines: 10,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.only(top: 10, left: 20),
-                      hintText: "Write it down here!",
-                      hintStyle: context.hintText,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Gaps.v40,
+                  Text(
+                    "How do you feel?",
+                    style: context.textTheme.headlineMedium!
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  Gaps.v12,
+                  Container(
+                    height: 150,
+                    decoration: BoxDecoration(
+                        color: Colors.amber.shade100,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.black, width: 2),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black, // 그림자 색상
+                            spreadRadius: 0, // 그림자 확산 범위
+                            blurRadius: 1, // 그림자 흐림 정도
+                            offset: Offset(-2, 4), // 그림자 위치 (x, y)
+                          )
+                        ]),
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      maxLines: 10,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            const EdgeInsets.only(top: 10, left: 20),
+                        hintText: "Write it down here!",
+                        hintStyle: context.hintText,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
                     ),
                   ),
-                ),
-                Gaps.v32,
-                Text(
-                  "What's your mood?",
-                  style: context.textTheme.headlineMedium!
-                      .copyWith(fontWeight: FontWeight.w600),
-                ),
-                Gaps.v12,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (final imozi in PostModel.MoodTypes)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _mood = imozi;
-                          });
-                        },
-                        child: AnimatedContainer(
-                          duration: Duration(milliseconds: 1000),
-                          curve: Curves.elasticInOut,
-                          width: _mood == imozi ? 50 : 40,
-                          height: _mood == imozi ? 50 : 40,
-                          margin: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                              color: _mood == imozi
-                                  ? context.colors.secondary
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: Colors.black,
+                  Gaps.v32,
+                  Text(
+                    "What's your mood?",
+                    style: context.textTheme.headlineMedium!
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  Gaps.v12,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (final imozi in PostModel.MoodTypes)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _mood = imozi;
+                            });
+                          },
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 1000),
+                            curve: Curves.elasticInOut,
+                            width: _mood == imozi ? 50 : 40,
+                            height: _mood == imozi ? 50 : 40,
+                            margin: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                                color: _mood == imozi
+                                    ? context.colors.secondary
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: Colors.black,
+                                ),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black, // 그림자 색상
+                                    spreadRadius: 0, // 그림자 확산 범위
+                                    blurRadius: 1, // 그림자 흐림 정도
+                                    offset: Offset(0, 2), // 그림자 위치 (x, y)
+                                  )
+                                ]),
+                            child: Center(
+                              child: Text(
+                                imozi,
+                                style: TextStyle(
+                                    fontSize: _mood == imozi ? 30 : 18),
                               ),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black, // 그림자 색상
-                                  spreadRadius: 0, // 그림자 확산 범위
-                                  blurRadius: 1, // 그림자 흐림 정도
-                                  offset: Offset(0, 2), // 그림자 위치 (x, y)
-                                )
-                              ]),
-                          child: Center(
-                            child: Text(
-                              imozi,
-                              style:
-                                  TextStyle(fontSize: _mood == imozi ? 30 : 18),
                             ),
                           ),
                         ),
+                    ],
+                  ),
+                  Gaps.v40,
+                  // if (!isKeyboardVisible)
+                  Center(
+                    child: GestureDetector(
+                      onTap: () => _onPost(context),
+                      child: SizedBox(
+                        width: 300,
+                        height: 50,
+                        child: FancyButton(
+                            text: "Post",
+                            style: context.buttonTitle,
+                            color: Colors.purple.shade100),
                       ),
-                  ],
-                ),
-                Gaps.v40,
-                Center(
-                  child: GestureDetector(
-                    onTap: () => _onPost(context),
-                    child: SizedBox(
-                      width: 300,
-                      height: 50,
-                      child: FancyButton(
-                          text: "Post",
-                          style: context.buttonTitle,
-                          color: Colors.purple.shade100),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           if (ref.watch(postProvider).isLoading)
