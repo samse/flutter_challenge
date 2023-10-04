@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:block_anim/block.dart';
+import 'package:block_anim/rotate_block.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -42,17 +43,22 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(8.0),
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 10, // 그리드 열의 수
-            crossAxisSpacing: 10.0, // 열 사이의 간격
-            mainAxisSpacing: 10.0, // 행 사이의 간격
+            crossAxisCount: 7, // 그리드 열의 수
+            crossAxisSpacing: 0.0, // 열 사이의 간격
+            mainAxisSpacing: 0.0, // 행 사이의 간격
           ),
-          itemCount: 100,
+          itemCount: 50,
           itemBuilder: (BuildContext context, int index) {
             return GridTile(
-              child: Block(
+              child: RotateBlock(
                 size: const Size(60, 60),
                 color: blockColor(index),
+                delay: blockDelay(index),
               ),
+              // child: Block(
+              //   size: const Size(60, 60),
+              //   color: blockColor(index),
+              // ),
             );
           },
         ),
@@ -83,6 +89,13 @@ class _MyHomePageState extends State<MyHomePage> {
     Colors.grey,
   ];
   Color blockColor(int index) {
-    return _colors[index % 20];
+    if (index.isOdd) {
+      return Colors.transparent;
+    }
+    return Colors.deepOrangeAccent;
+  }
+
+  int blockDelay(int index) {
+    return index * 20;
   }
 }
