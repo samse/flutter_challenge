@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pomodoro_anim/guage.dart';
 
@@ -32,6 +34,53 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool isRunning = false;
+  late Timer timer;
+  late double goalSeconds = 60 * 3; // 3분
+  late double elapsedSeconds = goalSeconds;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _onTogglePlay() {
+    isRunning = !isRunning;
+    setState(() {});
+
+    if (isRunning) {
+      timer = Timer.periodic(
+        const Duration(seconds: 1),
+        onTick,
+      );
+    }
+  }
+
+  void onTick(Timer timer) {
+    elapsedSeconds = elapsedSeconds - 1;
+    if (elapsedSeconds <= 0) {
+      // completed
+      timer.cancel();
+      elapsedSeconds = goalSeconds;
+    }
+    setState(() {});
+  }
+
+  String formatElapsedSeconds() {
+    var duration = Duration(seconds: elapsedSeconds.toInt());
+    return "${duration.toString().split(".").first.substring(2, 4)}:${duration.toString().split(".").first.substring(5, 7)}";
+  }
+
+  // String formatRestMin(int seconds) {
+  //   var duration = Duration(seconds: seconds);
+  //   return duration.toString().split(".").first.substring(2, 4);
+  // }
+  //
+  // String formatRestSeconds(int seconds) {
+  //   var duration = Duration(seconds: seconds);
+  //   return duration.toString().split(".").first.substring(5, 7);
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,14 +96,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 250,
                   height: 250,
                   child: Guage(
-                    guageValue: 9,
+                    guageValue: goalSeconds - elapsedSeconds,
                     min: 0,
-                    max: 10,
+                    max: goalSeconds,
                   ),
                 ),
                 Center(
                   child: Text(
-                    "3:00",
+                    formatElapsedSeconds(),
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 56,
@@ -85,10 +134,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.grey,
                     ),
                   ),
-                  Icon(
-                    Icons.play_circle,
-                    size: 80,
-                    color: Colors.red,
+                  GestureDetector(
+                    onTap: _onTogglePlay,
+                    child: Icon(
+                      isRunning ? Icons.pause_circle : Icons.play_circle,
+                      size: 80,
+                      color: Colors.red,
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 20.0, left: 20.0),
