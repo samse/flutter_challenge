@@ -35,31 +35,42 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Center(
-          child: Container(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
             width: 250,
             height: 250,
-            child: Guage(
-              guageValue: 120,
-              min: 0,
-              max: 180,
+            child: Stack(
+              children: [
+                Container(
+                  width: 250,
+                  height: 250,
+                  child: Guage(
+                    guageValue: 9,
+                    min: 0,
+                    max: 10,
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    "3:00",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 56,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        const Center(
-          child: Text(
-            "3:00",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 56,
-              fontWeight: FontWeight.w900,
-            ),
+          SizedBox(height: 20),
+          SizedBox(
+            height: 60,
+            child: Row(),
           ),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(top: 350),
-          child: Center(
+          Center(
             child: SizedBox(
               height: 60,
               child: Row(
@@ -91,8 +102,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }

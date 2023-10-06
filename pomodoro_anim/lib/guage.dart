@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:core';
 
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,9 @@ class _GuageState extends State<Guage> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: GuagePainter(
-          guageValue: widget.guageValue, min: widget.min!, max: widget.max!),
+          guageValue: widget.guageValue,
+          minValue: widget.min!,
+          maxValue: widget.max!),
     );
   }
 }
@@ -32,13 +35,13 @@ class GuagePainter extends CustomPainter {
   final maxGuageValue = 2.0; // 실제 게이지 최대값 0 ~ 2.0
   final barWidth = 24.0;
   final double guageValue;
-  final double min;
-  final double max;
+  final double minValue;
+  final double maxValue;
 
   GuagePainter({
     required this.guageValue,
-    required this.min,
-    required this.max,
+    required this.minValue,
+    required this.maxValue,
   });
 
   @override
@@ -73,8 +76,8 @@ class GuagePainter extends CustomPainter {
 
   // min, max 범위와 실제값을 가지고 0~2.0범위의 실제 게이지 값을 반환한다.
   double computeGuageValue() {
-    double range = max - min;
-    double realValue = guageValue * maxGuageValue / range;
+    double range = maxValue - minValue;
+    double realValue = (max(guageValue - minValue, 0)) * maxGuageValue / range;
     return realValue;
   }
 
