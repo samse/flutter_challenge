@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pomodoro_anim/guage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,7 +40,11 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Container(
             width: 250,
             height: 250,
-            color: Colors.red,
+            child: Guage(
+              guageValue: 120,
+              min: 0,
+              max: 180,
+            ),
           ),
         ),
         const Center(
