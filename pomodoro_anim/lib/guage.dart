@@ -5,10 +5,18 @@ import 'package:flutter/material.dart';
 
 class Guage extends StatefulWidget {
   final double guageValue;
-  late double? min;
-  late double? max;
-
-  Guage({Key? key, required this.guageValue, this.min = 0, this.max = 1})
+  late double min;
+  late double max;
+  late Color guageColor;
+  late Color guageBackgroundColor;
+  //Colors.black.withOpacity(0.2)
+  Guage(
+      {Key? key,
+      required this.guageValue,
+      this.min = 0,
+      this.max = 1,
+      this.guageBackgroundColor = Colors.black12,
+      this.guageColor = Colors.deepOrangeAccent})
       : super(key: key);
 
   @override
@@ -25,8 +33,10 @@ class _GuageState extends State<Guage> with SingleTickerProviderStateMixin {
     return CustomPaint(
       painter: GuagePainter(
           guageValue: widget.guageValue,
-          minValue: widget.min!,
-          maxValue: widget.max!),
+          minValue: widget.min,
+          maxValue: widget.max,
+          guageBackgroundColor: widget.guageBackgroundColor,
+          guageColor: widget.guageColor),
     );
   }
 }
@@ -37,24 +47,27 @@ class GuagePainter extends CustomPainter {
   final double guageValue;
   final double minValue;
   final double maxValue;
+  final Color guageColor;
+  final Color guageBackgroundColor;
 
-  GuagePainter({
-    required this.guageValue,
-    required this.minValue,
-    required this.maxValue,
-  });
+  GuagePainter(
+      {required this.guageValue,
+      required this.minValue,
+      required this.maxValue,
+      required this.guageColor,
+      required this.guageBackgroundColor});
 
   @override
   void paint(Canvas canvas, Size size) {
     final centerOffset = Offset(size.width / 2, size.height / 2);
     final nPaint = Paint()
-      ..color = Colors.black.withOpacity(0.2)
+      ..color = guageBackgroundColor //Colors.black.withOpacity(0.2)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = barWidth;
 
     final arcPaint = Paint()
-      ..color = Colors.red.shade400
+      ..color = guageColor //Colors.red.shade400
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = barWidth;
