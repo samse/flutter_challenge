@@ -136,7 +136,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
 
     print("pos: ${_positionAnim.value}");
     return Scaffold(
-        backgroundColor: Colors.amber.shade100,
+        backgroundColor: Colors.grey.shade100,
         body: AnimatedBuilder(
             animation: _positionAnim,
             builder: (context, child) {
