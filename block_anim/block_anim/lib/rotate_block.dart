@@ -19,7 +19,11 @@ class _RotateBlockState extends State<RotateBlock>
   late Color _color = widget.color;
   late final AnimationController _controller =
       AnimationController(duration: const Duration(seconds: 2), vsync: this);
-  late final animRotate = Tween(begin: 0.0, end: 1.0).animate(_controller);
+
+  late final curved =
+      CurvedAnimation(parent: _controller, curve: Interval(0.0, 0.5));
+
+  late final animRotate = Tween(begin: 0.0, end: 1.0).animate(curved);
   final random = Random();
 
   @override
