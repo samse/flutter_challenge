@@ -1,48 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:swipe_card/model/girlgroup_viewmodel.dart';
 
 import 'card.dart';
 import 'circle_button.dart';
+import 'model/girl_group.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Swipe card',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ProviderScope(
+      child: MaterialApp(
+        title: 'Swipe card',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: 'Swipe card'),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
+class _MyHomePageState extends ConsumerState<MyHomePage>
     with SingleTickerProviderStateMixin {
-  int cardIndex = 1;
+  int cardIndex = 0;
   Offset xPos = Offset(0, 0);
   late Size size = MediaQuery.of(context).size;
+  late final List<GirlGroup> _groups;
 
   late final AnimationController _positionAnim = AnimationController(
       vsync: this,
@@ -53,6 +59,12 @@ class _MyHomePageState extends State<MyHomePage>
 
   Tween<double> _scaleTween = Tween(begin: 0.8, end: 1.0);
   Tween<double> _opacity = Tween(begin: 0.1, end: 1.0);
+
+  @override
+  void initState() {
+    super.initState();
+    _groups = ref.read(girlgroupProvider).value!;
+  }
 
   @override
   void dispose() {
@@ -90,10 +102,12 @@ class _MyHomePageState extends State<MyHomePage>
 
   void _whenCompleted() {
     setState(() {
+      print("curr cardIndex : $cardIndex");
       cardIndex = cardIndex + 1;
-      if (cardIndex > 5) {
-        cardIndex = 1;
+      if (cardIndex >= 5) {
+        cardIndex = 0;
       }
+      print("next cardIndex : $cardIndex");
       _positionAnim.value = 0;
     });
   }
@@ -118,11 +132,11 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
+    print("${ref.read(girlgroupProvider).value}");
+
     print("pos: ${_positionAnim.value}");
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
+        backgroundColor: Colors.amber.shade100,
         body: AnimatedBuilder(
             animation: _positionAnim,
             builder: (context, child) {
@@ -152,7 +166,8 @@ class _MyHomePageState extends State<MyHomePage>
                       Transform.scale(
                         scale: scale,
                         child: CoverCard(
-                          index: (cardIndex == 5) ? 1 : (cardIndex + 1),
+                          girlGroup:
+                              _groups[(cardIndex == 4) ? 1 : (cardIndex + 1)],
                         ),
                       ),
                       GestureDetector(
@@ -167,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage>
                             //     _animationController.value, 0), //Offset(xPos, 0),
                             angle: _rotateValue(_positionAnim.value),
                             origin: Offset(0, size.height),
-                            child: CoverCard(index: cardIndex),
+                            child: CoverCard(girlGroup: _groups[cardIndex]),
                           ),
                         ),
                       ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:swipe_card/model/girl_group.dart';
 
 class CoverCard extends StatelessWidget {
-  final int index;
-  const CoverCard({super.key, required this.index});
+  final GirlGroup girlGroup;
+  const CoverCard({super.key, required this.girlGroup});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class CoverCard extends StatelessWidget {
         width: size.width * 0.8,
         height: size.height * 0.5,
         child: Image.asset(
-          "assets/covers/$index.jpg",
+          "assets/covers/${girlGroup.imagePath}",
           fit: BoxFit.cover,
         ),
       ),
