@@ -1,10 +1,10 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:swipe_card/model/girlgroup_viewmodel.dart';
+import 'package:swipe_card/data/girlgroup_viewmodel.dart';
 
 import 'card.dart';
-import 'circle_button.dart';
-import 'model/girl_group.dart';
+import 'data/girl_group.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,7 +44,7 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   int cardIndex = 0;
   Offset xPos = Offset(0, 0);
   late Size size = MediaQuery.of(context).size;
@@ -57,8 +57,19 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
       upperBound: size.width,
       value: 0);
 
+  late final AnimationController _progressController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2000),
+  ); //..repeat(reverse: true);
+
   Tween<double> _scaleTween = Tween(begin: 0.8, end: 1.0);
   Tween<double> _opacity = Tween(begin: 0.1, end: 1.0);
+
+  late final AnimationController _colorController = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 300));
+  late Animation _bgColorAnim =
+      ColorTween(begin: Colors.cyan, end: Colors.amber)
+          .animate(_colorController);
 
   @override
   void initState() {
@@ -69,12 +80,16 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
   @override
   void dispose() {
     _positionAnim.dispose();
+    _progressController.dispose();
     super.dispose();
   }
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
     // print("dragging details: $details");
     _positionAnim.value += details.delta.dx;
+    // x : 400 = y : 1;
+    // y = x / 400;
+    _colorController.value = min(_positionAnim.value.abs() / 250, 1.0);
   }
 
   void _onHorizontalDragEnd(DragEndDetails details) async {
@@ -90,6 +105,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
     } else {
       print("set to 0");
       _positionAnim.animateTo(0, curve: Curves.decelerate);
+      _colorController.animateTo(0, curve: Curves.decelerate);
     }
   }
 
@@ -101,6 +117,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
   }
 
   void _whenCompleted() {
+    List<GirlGroup> list = ref.read(girlgroupProvider).value!;
     setState(() {
       print("curr cardIndex : $cardIndex");
       cardIndex = cardIndex + 1;
@@ -108,6 +125,15 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
         cardIndex = 0;
       }
       print("next cardIndex : $cardIndex");
+      // print(
+      //     "color ${list[cardIndex].color} ==> ${list[cardIndex == 4 ? 0 : cardIndex + 1].color}");
+      _progressController.animateTo((cardIndex + 1) * 0.2);
+      _colorController.animateTo(1, curve: Curves.decelerate).whenComplete(() =>
+          _bgColorAnim = ColorTween(
+                  begin: list[cardIndex].color,
+                  end: list[cardIndex == 4 ? 0 : cardIndex + 1].color)
+              .animate(_colorController));
+
       _positionAnim.value = 0;
     });
   }
@@ -131,95 +157,131 @@ class _MyHomePageState extends ConsumerState<MyHomePage>
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
-    print("${ref.read(girlgroupProvider).value}");
-
-    print("pos: ${_positionAnim.value}");
+    // print("pos: ${_positionAnim.value}");
     return Scaffold(
-        backgroundColor: Colors.grey.shade100,
         body: AnimatedBuilder(
             animation: _positionAnim,
             builder: (context, child) {
               final scale = _scaleTween.transform(
                   _positionAnim.value.abs() / _positionAnim.upperBound);
-              print("_positionAnimValue: ${_positionAnim.value}");
-              Color _leftColor = Colors.red.withOpacity(1.0);
-              Color _rightColor = Colors.blue.withOpacity(1.0);
-              final opacity = _opacity.transform(
-                  _positionAnim.value.abs() / _positionAnim.upperBound);
-              if (_positionAnim.value.isNegative) {
-                _leftColor = Colors.red.withOpacity(opacity);
-              } else if (_positionAnim.value > 0) {
-                _rightColor = Colors.blue.withOpacity(opacity);
-              }
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 100,
-                    width: size.width,
-                  ),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Transform.scale(
-                        scale: scale,
-                        child: CoverCard(
-                          girlGroup:
-                              _groups[(cardIndex == 4) ? 1 : (cardIndex + 1)],
+              // print("_positionAnimValue: ${_positionAnim.value}");
+              // Color _leftColor = Colors.red.withOpacity(1.0);
+              // Color _rightColor = Colors.blue.withOpacity(1.0);
+              // final opacity = _opacity.transform(
+              //     _positionAnim.value.abs() / _positionAnim.upperBound);
+              // if (_positionAnim.value.isNegative) {
+              //   _leftColor = Colors.red.withOpacity(opacity);
+              // } else if (_positionAnim.value > 0) {
+              //   _rightColor = Colors.blue.withOpacity(opacity);
+              // }
+              return AnimatedBuilder(
+                animation: _bgColorAnim,
+                builder: (context, child) {
+                  return Container(
+                    height: size.height,
+                    color: _bgColorAnim.value,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 100,
+                          width: size.width,
                         ),
-                      ),
-                      GestureDetector(
-                        onHorizontalDragUpdate: (details) =>
-                            _onHorizontalDragUpdate(details),
-                        onHorizontalDragEnd: (details) =>
-                            _onHorizontalDragEnd(details),
-                        child: Transform.translate(
-                          offset: Offset(_positionAnim.value, 0),
-                          child: Transform.rotate(
-                            // offset: Offset(
-                            //     _animationController.value, 0), //Offset(xPos, 0),
-                            angle: _rotateValue(_positionAnim.value),
-                            origin: Offset(0, size.height),
-                            child: CoverCard(girlGroup: _groups[cardIndex]),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Transform.scale(
+                              scale: scale,
+                              child: CoverCard(
+                                girlGroup: _groups[
+                                    (cardIndex == 4) ? 1 : (cardIndex + 1)],
+                              ),
+                            ),
+                            GestureDetector(
+                              onHorizontalDragUpdate: (details) =>
+                                  _onHorizontalDragUpdate(details),
+                              onHorizontalDragEnd: (details) =>
+                                  _onHorizontalDragEnd(details),
+                              child: Transform.translate(
+                                offset: Offset(_positionAnim.value, 0),
+                                child: Transform.rotate(
+                                  // offset: Offset(
+                                  //     _animationController.value, 0), //Offset(xPos, 0),
+                                  angle: _rotateValue(_positionAnim.value),
+                                  origin: Offset(0, size.height),
+                                  child:
+                                      CoverCard(girlGroup: _groups[cardIndex]),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        AnimatedBuilder(
+                          animation: _progressController,
+                          builder: (context, child) => CustomPaint(
+                            size: Size(size.width - 80, 16),
+                            painter: ProgressBar(
+                              range: 5.0,
+                              progressValue: _progressController.value,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () => _onTapLeft(context),
-                        child: CircleButton(
-                          color: _leftColor,
-                          icon: Icon(Icons.close, color: Colors.white),
-                          size: Size(60, 60),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      GestureDetector(
-                        onTap: () => _onTapRight(context),
-                        child: CircleButton(
-                          color: _rightColor,
-                          icon: Icon(
-                            Icons.auto_awesome,
-                            color: Colors.white,
-                          ),
-                          size: Size(60, 60),
-                        ),
-                      )
-                    ],
-                  )
-                ],
+                      ],
+                    ),
+                  );
+                },
               );
             }));
+  }
+}
+
+class ProgressBar extends CustomPainter {
+  final double progressValue;
+  final double range;
+  ProgressBar({
+    required this.progressValue,
+    required this.range,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final progress = size.width * progressValue;
+    final trackPaint = Paint()
+      ..color = Colors.grey.shade300
+      ..style = PaintingStyle.fill;
+
+    final trackRRect = RRect.fromLTRBR(
+      0,
+      0,
+      size.width,
+      size.height,
+      const Radius.circular(10),
+    );
+
+    canvas.drawRRect(trackRRect, trackPaint);
+
+    // progress
+    final progressPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    final progressRRect = RRect.fromLTRBR(
+      0,
+      0,
+      progress,
+      size.height,
+      const Radius.circular(10),
+    );
+
+    canvas.drawRRect(progressRRect, progressPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant ProgressBar oldDelegate) {
+    return oldDelegate.progressValue != progressValue;
   }
 }

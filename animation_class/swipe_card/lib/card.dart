@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:swipe_card/model/girl_group.dart';
+import 'package:swipe_card/data/girl_group.dart';
 
 class CoverCard extends StatefulWidget {
   final GirlGroup girlGroup;
@@ -14,22 +14,20 @@ class _CoverCardState extends State<CoverCard>
   late final AnimationController _controller =
       AnimationController(vsync: this, duration: Duration(milliseconds: 500));
   late final rotateAnim = Tween(begin: 0.0, end: 0.5).animate(_controller);
-  bool _flip = false;
+  late final fadeOut = Tween(begin: 1.0, end: 0.0).animate(_controller);
+  late final fadeIn = Tween(begin: 0.0, end: 1.0).animate(_controller);
+
+  bool _fliped = false;
 
   void _onTap() async {
-    if (_flip) {
+    if (_fliped) {
       _controller.reverse();
     } else {
       await _controller.forward();
     }
     setState(() {
-      _flip = !_flip;
+      _fliped = !_fliped;
     });
-  }
-
-  void _whenCompleted() {
-    print("_whenCompleted");
-    _flip = !_flip;
   }
 
   @override
@@ -63,26 +61,44 @@ class _CoverCardState extends State<CoverCard>
                   ),
                 ),
               ),
-              if (_flip)
-                Container(
-                  width: size.width * 0.8,
-                  height: size.width * 0.8 * 1.4,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.4),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Twice",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 34,
-                            fontWeight: FontWeight.w600),
+              _fliped
+                  ? AnimatedOpacity(
+                      opacity: fadeIn.value,
+                      duration: const Duration(milliseconds: 300),
+                      child: Container(
+                        width: size.width * 0.8,
+                        height: size.width * 0.8 * 1.4,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.4),
+                        ),
+                        child: Center(
+                          child: Text(
+                            widget.girlGroup.fandomName,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 68,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
                       ),
-                      Text("once")
-                    ],
-                  ),
-                ),
+                    )
+                  : AnimatedOpacity(
+                      opacity: fadeOut.value,
+                      duration: const Duration(milliseconds: 30),
+                      child: SizedBox(
+                          width: size.width * 0.8,
+                          height: size.width * 0.8 * 1.4,
+                          child: Center(
+                              child: Text(
+                            "What is \n${widget.girlGroup.name}'s fandom?",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ))),
+                    ),
             ],
           );
         },
