@@ -33,7 +33,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   late Size? _size;
   late double _startPos;
   late bool _arrowToDown = true;
@@ -90,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _scrollController.position.pixels;
       }
     });
+    _controller.forward();
   }
 
   void dispose() {
@@ -142,6 +144,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return false;
   }
 
+  late final AnimationController _controller = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 500));
+  // late final Animation _opacityAnim =
+  // Tween<double>(begin: 0.2, end: 1.0).animate(_controller);
+
   @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
@@ -150,13 +157,14 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           // 배경 이미지
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 2000),
             top: _arrowToDown ? -20 : 0,
             width: _size!.width,
             height: _size!.height + 40,
             child: Image.network(
               gameTitle.imageUrl,
               fit: BoxFit.cover,
+              opacity: Tween(begin: 0.5, end: 1.0).animate(_controller),
             ),
           ),
           Container(
@@ -164,33 +172,65 @@ class _MyHomePageState extends State<MyHomePage> {
             height: _size!.height,
             color: Colors.black.withOpacity(0.2),
           ),
-          // 콘텐츠 영역
-          NotificationListener(
-            onNotification: _onScrollNotification,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  DetailScreen(
-                      width: _size!.width,
-                      height: _size!.height,
-                      gameTitle: gameTitle,
-                      arrowToDown: _arrowToDown),
-                  GameTitleSliderScreen(
-                    width: _size!.width,
-                    height: _size!.height,
-                    gameTitles: gameTitles,
-                    dropDowned: _arrowToDown,
-                    onTitleSelected: (index) {
-                      setState(() {
-                        gameTitle = gameTitles[index];
-                      });
-                    },
-                  ),
-                ],
-              ),
+          PageView(
+            controller: PageController(
+              initialPage: 0,
+              viewportFraction: 0.9,
             ),
+            scrollDirection: Axis.vertical,
+            onPageChanged: (index) {
+              setState(() {
+                _arrowToDown = index == 0;
+                print("_arrowToDown is $_arrowToDown");
+              });
+            },
+            children: [
+              DetailScreen(
+                  width: _size!.width,
+                  height: _size!.height,
+                  gameTitle: gameTitle,
+                  arrowToDown: _arrowToDown),
+              GameTitleSliderScreen(
+                width: _size!.width,
+                height: _size!.height,
+                gameTitles: gameTitles,
+                dropDowned: _arrowToDown,
+                onTitleSelected: (index) {
+                  setState(() {
+                    gameTitle = gameTitles[index];
+                    _controller.forward(from: 0);
+                  });
+                },
+              ),
+            ],
           )
+          // 콘텐츠 영역
+          // NotificationListener(
+          //   onNotification: _onScrollNotification,
+          //   child: SingleChildScrollView(
+          //     controller: _scrollController,
+          //     child: Column(
+          //       children: [
+          //         DetailScreen(
+          //             width: _size!.width,
+          //             height: _size!.height,
+          //             gameTitle: gameTitle,
+          //             arrowToDown: _arrowToDown),
+          //         GameTitleSliderScreen(
+          //           width: _size!.width,
+          //           height: _size!.height,
+          //           gameTitles: gameTitles,
+          //           dropDowned: _arrowToDown,
+          //           onTitleSelected: (index) {
+          //             setState(() {
+          //               gameTitle = gameTitles[index];
+          //             });
+          //           },
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

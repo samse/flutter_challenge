@@ -28,10 +28,31 @@ class GameTitleScreen extends StatelessWidget {
       height: height,
       child: Stack(
         children: [
+          if (!dropDowned)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 2000),
+                width: width,
+                height: 40,
+                child: Center(
+                  child: Transform.rotate(
+                    angle: -1.55,
+                    child: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           // 배경 박스
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
-            top: dropDowned ? -40 : height * 0.2,
+            top: dropDowned ? 10 : height * 0.2,
             left: 0,
             right: 0,
             bottom: 80,

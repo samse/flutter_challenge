@@ -109,7 +109,7 @@ class DetailScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Container(
-                    height: height - (height / 2) - 160,
+                    height: height - (height / 2) - 200,
                     child: SingleChildScrollView(
                       child: Text(
                         gameTitle.description,
@@ -123,26 +123,27 @@ class DetailScreen extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 60,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 2000),
-            width: width,
-            height: 40,
-            child: Center(
-              child: Transform.rotate(
-                angle: arrowToDown ? 1.55 : -1.55,
-                child: const Icon(
-                  Icons.chevron_left,
-                  color: Colors.white,
-                  size: 40,
+        if (arrowToDown)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 2000),
+              width: width,
+              height: 40,
+              child: Center(
+                child: Transform.rotate(
+                  angle: arrowToDown ? 1.55 : -1.55,
+                  child: const Icon(
+                    Icons.chevron_left,
+                    color: Colors.white,
+                    size: 40,
+                  ),
                 ),
               ),
             ),
-          ),
-        )
+          )
       ],
     );
   }
