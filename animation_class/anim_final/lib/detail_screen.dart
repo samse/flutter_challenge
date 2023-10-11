@@ -109,7 +109,7 @@ class DetailScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Container(
-                    height: height - (height / 2) - 200,
+                    height: height - (height / 2) - 170,
                     child: SingleChildScrollView(
                       child: Text(
                         gameTitle.description,

@@ -55,7 +55,7 @@ class GameTitleScreen extends StatelessWidget {
             top: dropDowned ? 10 : height * 0.2,
             left: 0,
             right: 0,
-            bottom: 80,
+            bottom: 20,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Container(

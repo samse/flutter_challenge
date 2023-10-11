@@ -79,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage>
   ];
 
   late GameTitle gameTitle = gameTitles[1];
+  late String? prevImageUrl = gameTitle.imageUrl;
 
   late final ScrollController _scrollController = ScrollController();
 
@@ -145,9 +146,11 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   late final AnimationController _controller = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 500));
-  // late final Animation _opacityAnim =
-  // Tween<double>(begin: 0.2, end: 1.0).animate(_controller);
+      vsync: this, duration: const Duration(milliseconds: 2000));
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -161,11 +164,27 @@ class _MyHomePageState extends State<MyHomePage>
             top: _arrowToDown ? -20 : 0,
             width: _size!.width,
             height: _size!.height + 40,
-            child: Image.network(
-              gameTitle.imageUrl,
-              fit: BoxFit.cover,
-              opacity: Tween(begin: 0.5, end: 1.0).animate(_controller),
-            ),
+            child: Stack(children: [
+              SizedBox(
+                width: _size!.width,
+                height: _size!.height + 40,
+                child: Image.network(
+                  prevImageUrl!,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              FadeTransition(
+                opacity: _animation,
+                child: SizedBox(
+                  width: _size!.width,
+                  height: _size!.height + 40,
+                  child: Image.network(
+                    gameTitle.imageUrl,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ]),
           ),
           Container(
             width: _size!.width,
@@ -197,6 +216,7 @@ class _MyHomePageState extends State<MyHomePage>
                 dropDowned: _arrowToDown,
                 onTitleSelected: (index) {
                   setState(() {
+                    prevImageUrl = gameTitle.imageUrl;
                     gameTitle = gameTitles[index];
                     _controller.forward(from: 0);
                   });
