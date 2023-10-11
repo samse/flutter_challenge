@@ -5,12 +5,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'common/gaps.dart';
 import 'model/gametitle.dart';
 
-class DetailScreen extends StatelessWidget {
+class GameTitleDetailScreen extends StatelessWidget {
   final double width;
   final double height;
   final GameTitle gameTitle;
   final bool arrowToDown;
-  const DetailScreen(
+  const GameTitleDetailScreen(
       {Key? key,
       required this.width,
       required this.height,
