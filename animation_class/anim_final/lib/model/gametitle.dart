@@ -7,6 +7,7 @@ class GameTitle {
   final String imageUrl;
   final String thumbnailUrl;
   final String shortDescription;
+  final String steamUrl;
   GameTitle({
     required this.title,
     required this.rating,
@@ -15,6 +16,7 @@ class GameTitle {
     required this.imageUrl,
     required this.thumbnailUrl,
     required this.shortDescription,
+    required this.steamUrl,
     this.videoUrl,
   });
 }

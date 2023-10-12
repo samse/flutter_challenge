@@ -10,15 +10,17 @@ class GameTitleSliderScreen extends StatefulWidget {
   final List<GameTitle> gameTitles;
   final int selectedIndex = 0;
   final Function? onTitleSelected;
+  final Function onAddCart;
   final bool dropDowned; // 하단으로 스크롤되어 안보이는 상태, 흰색 배경박스의 머리 부분이 보여야 함.
-  const GameTitleSliderScreen(
-      {Key? key,
-      required this.width,
-      required this.height,
-      required this.gameTitles,
-      required this.dropDowned,
-      this.onTitleSelected})
-      : super(key: key);
+  const GameTitleSliderScreen({
+    Key? key,
+    required this.width,
+    required this.height,
+    required this.gameTitles,
+    required this.dropDowned,
+    required this.onAddCart,
+    this.onTitleSelected,
+  }) : super(key: key);
 
   @override
   State<GameTitleSliderScreen> createState() => _GameTitleSliderScreenState();
@@ -75,11 +77,11 @@ class _GameTitleSliderScreenState extends State<GameTitleSliderScreen> {
   Widget buildTitleScreen(
       {required GameTitle gameTitle, required bool selected}) {
     return GameTitleScreen(
-      width: widget.width * 0.8,
-      height: widget.height,
-      gameTitle: gameTitle,
-      selected: selected,
-      dropDowned: widget.dropDowned,
-    );
+        width: widget.width * 0.8,
+        height: widget.height,
+        gameTitle: gameTitle,
+        selected: selected,
+        dropDowned: widget.dropDowned,
+        onAddCart: widget.onAddCart);
   }
 }

@@ -1,6 +1,8 @@
 import 'package:anim_final/common/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import 'common/gaps.dart';
 import 'model/gametitle.dart';
@@ -10,7 +12,8 @@ class GameTitleScreen extends StatelessWidget {
   final double height;
   final GameTitle gameTitle;
   final bool selected;
-  final bool dropDowned; // true이면 희색박스가 보여야 함.
+  final bool dropDowned;
+  final Function onAddCart;
   const GameTitleScreen({
     Key? key,
     required this.width,
@@ -18,7 +21,31 @@ class GameTitleScreen extends StatelessWidget {
     required this.gameTitle,
     required this.selected,
     required this.dropDowned,
+    required this.onAddCart,
   }) : super(key: key);
+
+  void _openSteamUrl() async {
+    print("openSteamUrl : ${gameTitle.steamUrl}");
+    Uri url = Uri.parse(gameTitle.steamUrl);
+    print("url: $url");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch ${gameTitle.steamUrl}';
+    }
+  }
+
+  // void _launchURL(String url) async {
+  //   if (await canLaunchUrlString(url)) {
+  //     await launchUrlString(url, mode: LaunchMode.externalApplication);
+  //   } else {
+  //     throw 'Could not launch ${gameTitle.steamUrl}';
+  //   }
+  // }
+
+  void _onAddCart() {
+    onAddCart(0); // 원래는 아이템의 키를 넘기고자 했음.
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,15 +145,18 @@ class GameTitleScreen extends StatelessWidget {
                           },
                         ),
                         Gaps.v16,
-                        Container(
-                          width: width,
-                          height: 60,
-                          color: Colors.blue,
-                          child: Center(
-                            child: Text(
-                              "Add to cart +",
-                              style: context.headlineMin
-                                  .copyWith(color: Colors.white, fontSize: 18),
+                        GestureDetector(
+                          onTap: _onAddCart,
+                          child: Container(
+                            width: width,
+                            height: 60,
+                            color: Colors.blue,
+                            child: Center(
+                              child: Text(
+                                "Add to cart +",
+                                style: context.headlineMin.copyWith(
+                                    color: Colors.white, fontSize: 18),
+                              ),
                             ),
                           ),
                         )
@@ -137,27 +167,37 @@ class GameTitleScreen extends StatelessWidget {
               ),
             ),
           ),
+          // 표지
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             top: height * 0.1,
             left: width * 0.6 / 3 + (selected ? 0 : 40),
-            child: Container(
-              width: width * 0.6,
-              height: height * 0.3,
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black38, // 그림자 색상
-                      offset: Offset(0, 1), // 그림자 위치 (x, y)
-                      blurRadius: 15, // 그림자의 흐림 정도
-                      spreadRadius: 20, // 그림자 확산 정도
-                    ),
-                  ]),
-              child: Image.network(
-                gameTitle.thumbnailUrl,
-                fit: BoxFit.cover,
+            child: AnimatedScale(
+              scale: selected ? 1.0 : 0.5,
+              duration: const Duration(milliseconds: 300),
+              child: GestureDetector(
+                onTap: () {
+                  _openSteamUrl();
+                },
+                child: Container(
+                  width: width * 0.6,
+                  height: height * 0.3,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black38, // 그림자 색상
+                          offset: Offset(0, 1), // 그림자 위치 (x, y)
+                          blurRadius: 15, // 그림자의 흐림 정도
+                          spreadRadius: 20, // 그림자 확산 정도
+                        ),
+                      ]),
+                  child: Image.network(
+                    gameTitle.thumbnailUrl,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
           )
