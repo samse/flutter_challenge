@@ -4,29 +4,29 @@ import 'package:flutter/rendering.dart';
 import 'gametitle_screen.dart';
 import 'model/gametitle.dart';
 
-class GameTitleSliderScreen extends StatefulWidget {
+class GameTitlesSliderScreen extends StatefulWidget {
   final double width;
   final double height;
   final List<GameTitle> gameTitles;
   final int selectedIndex = 0;
   final Function? onTitleSelected;
   final Function onAddCart;
-  final bool dropDowned; // 하단으로 스크롤되어 안보이는 상태, 흰색 배경박스의 머리 부분이 보여야 함.
-  const GameTitleSliderScreen({
+  final bool scrolledDown;
+  const GameTitlesSliderScreen({
     Key? key,
     required this.width,
     required this.height,
     required this.gameTitles,
-    required this.dropDowned,
+    required this.scrolledDown,
     required this.onAddCart,
     this.onTitleSelected,
   }) : super(key: key);
 
   @override
-  State<GameTitleSliderScreen> createState() => _GameTitleSliderScreenState();
+  State<GameTitlesSliderScreen> createState() => _GameTitlesSliderScreenState();
 }
 
-class _GameTitleSliderScreenState extends State<GameTitleSliderScreen> {
+class _GameTitlesSliderScreenState extends State<GameTitlesSliderScreen> {
   final ScrollController _scrollController = ScrollController();
   int _currPage = 1;
 
@@ -67,8 +67,6 @@ class _GameTitleSliderScreenState extends State<GameTitleSliderScreen> {
           for (final item in widget.gameTitles.asMap().entries)
             buildTitleScreen(
                 gameTitle: item.value, selected: (item.key == _currPage))
-          // for (final gameTitle in widget.gameTitles)
-          //   buildTitleScreen(gameTitle, selected: index)
         ],
       ),
     );
@@ -81,7 +79,7 @@ class _GameTitleSliderScreenState extends State<GameTitleSliderScreen> {
         height: widget.height,
         gameTitle: gameTitle,
         selected: selected,
-        dropDowned: widget.dropDowned,
+        dropDowned: widget.scrolledDown,
         onAddCart: widget.onAddCart);
   }
 }
