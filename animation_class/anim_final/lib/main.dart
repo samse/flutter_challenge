@@ -1,7 +1,9 @@
+import 'package:anim_final/common/app.dart';
 import 'package:anim_final/gametitle_detail_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'gametitle_slider.dart';
+import 'common/durations.dart';
+import 'gametitles_slider_screen.dart';
 import 'model/gametitle.dart';
 
 void main() {
@@ -33,31 +35,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  late Size? _size;
-  late bool _arrowToDown = true;
+  late Size _size;
+  late bool _scrolledDown = true;
   late GameTitle gameTitle = gameTitles[1];
   late String? prevImageUrl = gameTitle.imageUrl;
   int cartCount = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller.forward();
-    _cartController.forward(from: 1.0);
-  }
-
-  void dispose() {
-    super.dispose();
-  }
-
   late final AnimationController _controller = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 500));
+      vsync: this,
+      duration: Durations.ms(500)); //const Duration(milliseconds: 500));
   late final Animation<double> _animation = CurvedAnimation(
     parent: _controller,
     curve: Curves.easeIn,
   );
   late final AnimationController _cartController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 1000));
+      vsync: this,
+      duration: Durations.sec(1)); //const Duration(milliseconds: 1000));
   late final Animation cartAnimX = Tween<double>(
           begin: MediaQuery.of(context).size.width / 2,
           end: MediaQuery.of(context).size.width - 36)
@@ -69,42 +62,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       Tween<double>(begin: 1.0, end: 0).animate(_cartController);
 
   @override
+  void initState() {
+    super.initState();
+    _controller.forward();
+    _cartController.forward(from: 1.0);
+  }
+
+  void dispose() {
+    _controller.dispose();
+    _cartController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [
-          // 배경 이미지
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 2000),
-            top: _arrowToDown ? -20 : 0,
-            width: _size!.width,
-            height: _size!.height + 40,
-            child: Stack(children: [
-              SizedBox(
-                width: _size!.width,
-                height: _size!.height + 40,
-                child: Image.network(
-                  prevImageUrl!,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              FadeTransition(
-                opacity: _animation,
-                child: SizedBox(
-                  width: _size!.width,
-                  height: _size!.height + 40,
-                  child: Image.network(
-                    gameTitle.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ]),
-          ),
+          // 배경 이미지 : 페이지 이동 시 상하 이동 애니매이션
+          buildScrollBackgroundImages(context, _size),
           Container(
-            width: _size!.width,
-            height: _size!.height,
+            width: _size.width,
+            height: _size.height,
             color: Colors.black.withOpacity(0.2),
           ),
           PageView(
@@ -115,21 +95,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             scrollDirection: Axis.vertical,
             onPageChanged: (index) {
               setState(() {
-                _arrowToDown = index == 0;
-                print("_arrowToDown is $_arrowToDown");
+                _scrolledDown = index == 0;
+                print("_scrolledToDown is $_scrolledDown");
               });
             },
             children: [
               GameTitleDetailScreen(
-                  width: _size!.width,
-                  height: _size!.height,
+                  width: _size.width,
+                  height: _size.height,
                   gameTitle: gameTitle,
-                  arrowToDown: _arrowToDown),
-              GameTitleSliderScreen(
-                width: _size!.width,
-                height: _size!.height,
+                  scrolledDown: _scrolledDown),
+              GameTitlesSliderScreen(
+                width: _size.width,
+                height: _size.height,
                 gameTitles: gameTitles,
-                dropDowned: _arrowToDown,
+                scrolledDown: _scrolledDown,
                 onTitleSelected: (index) {
                   setState(() {
                     prevImageUrl = gameTitle.imageUrl;
@@ -145,79 +125,117 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ),
             ],
           ),
-          Positioned(
-            right: 10,
-            top: 60,
-            child: Container(
-              width: 50,
-              height: 50,
-              child: Stack(
-                children: [
-                  Center(
-                    child: Icon(
-                      Icons.shopping_cart,
-                      color: Colors.white70,
-                      size: 40,
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    child: Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.blue,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "$cartCount",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          AnimatedBuilder(
-              animation: _cartController,
-              builder: (context, child) {
-                return Positioned(
-                  left: cartAnimX.value,
-                  bottom: cartAnimY.value,
-                  child: AnimatedOpacity(
-                    opacity: cartOpacity.value,
-                    duration: const Duration(milliseconds: 800),
-                    child: Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.blue,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "1",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
+          buildCartIcon(context),
+          buildCartAnimIcon(context),
         ],
       ),
     );
+  }
+
+  Widget buildScrollBackgroundImages(BuildContext context, Size size) {
+    return AnimatedPositioned(
+      duration: Durations.ms(2000),
+      top: _scrolledDown ? -20 : 0,
+      width: _size.width,
+      height: _size.height + 40,
+      child: Stack(children: [
+        SizedBox(
+          width: _size.width,
+          height: _size.height + 40,
+          child: Image.network(
+            prevImageUrl!,
+            fit: BoxFit.cover,
+          ),
+        ),
+        FadeTransition(
+          opacity: _animation,
+          child: SizedBox(
+            width: _size.width,
+            height: _size.height + 40,
+            child: Image.network(
+              gameTitle.imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Widget buildCartIcon(BuildContext context) {
+    return Positioned(
+      right: 10,
+      top: 60,
+      child: Container(
+        width: 50,
+        height: 50,
+        child: Stack(
+          children: [
+            const Center(
+              child: Icon(
+                Icons.shopping_cart,
+                color: Colors.white70,
+                size: 40,
+              ),
+            ),
+            Positioned(
+              right: 0,
+              child: Container(
+                width: 25,
+                height: 25,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.blue,
+                ),
+                child: Center(
+                  child: Text(
+                    "$cartCount",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildCartAnimIcon(BuildContext context) {
+    return AnimatedBuilder(
+        animation: _cartController,
+        builder: (context, child) {
+          return Positioned(
+            left: cartAnimX.value,
+            bottom: cartAnimY.value,
+            child: AnimatedOpacity(
+              opacity: cartOpacity.value,
+              duration: Durations.ms(800), //const Duration(milliseconds: 800),
+              child: Container(
+                width: 25,
+                height: 25,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.blue,
+                ),
+                child: const Center(
+                  child: Text(
+                    "1",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   late List<GameTitle> gameTitles = [

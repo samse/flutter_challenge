@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:video_player/video_player.dart';
 
+import 'common/durations.dart';
 import 'common/gaps.dart';
 import 'model/gametitle.dart';
 
@@ -10,13 +11,14 @@ class GameTitleDetailScreen extends StatefulWidget {
   final double width;
   final double height;
   final GameTitle gameTitle;
-  final bool arrowToDown;
-  GameTitleDetailScreen(
+  final bool scrolledDown;
+
+  const GameTitleDetailScreen(
       {Key? key,
       required this.width,
       required this.height,
       required this.gameTitle,
-      required this.arrowToDown})
+      required this.scrolledDown})
       : super(key: key);
 
   @override
@@ -32,14 +34,12 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
     _videoController =
         VideoPlayerController.networkUrl(Uri.parse(widget.gameTitle.videoUrl!))
           ..initialize().then((value) {
-            print("VideoController initialized!!!!!!!");
             setState(() {});
           });
   }
 
   @override
   void dispose() {
-    print("VideoController dusoised!!!!!!!");
     _videoController.dispose();
     super.dispose();
   }
@@ -67,11 +67,13 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
                 Gaps.v80,
                 Center(
                   child: AnimatedRotation(
-                    turns: widget.arrowToDown ? 1.0 : 0.5,
-                    duration: const Duration(milliseconds: 300),
+                    turns: widget.scrolledDown ? 1.0 : 0.5,
+                    duration:
+                        Durations.ms(300), //const Duration(milliseconds: 300),
                     child: AnimatedScale(
-                      scale: widget.arrowToDown ? 1.0 : 0.2,
-                      duration: const Duration(seconds: 800),
+                      scale: widget.scrolledDown ? 1.0 : 0.2,
+                      duration:
+                          Durations.ms(800), // const Duration(seconds: 800),
                       child: Text(
                         widget.gameTitle.title,
                         textAlign: TextAlign.center,
@@ -177,18 +179,20 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
             ),
           ),
         ),
-        if (widget.arrowToDown)
+
+        /// 하단 화살표
+        if (widget.scrolledDown)
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 2000),
+              duration: Durations.sec(2), // const Duration(milliseconds: 2000),
               width: widget.width,
               height: 40,
               child: Center(
                 child: Transform.rotate(
-                  angle: widget.arrowToDown ? 1.55 : -1.55,
+                  angle: widget.scrolledDown ? 1.55 : -1.55,
                   child: const Icon(
                     Icons.chevron_left,
                     color: Colors.white,

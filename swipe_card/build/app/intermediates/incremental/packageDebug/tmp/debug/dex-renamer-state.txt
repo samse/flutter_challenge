@@ -1,0 +1,4 @@
+#Fri Sep 15 00:57:51 KST 2023
+base.0=/Users/yosamlee/git/flutter_challenge/swipe_card/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

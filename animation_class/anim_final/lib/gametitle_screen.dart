@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import 'common/durations.dart';
 import 'common/gaps.dart';
 import 'model/gametitle.dart';
 
@@ -61,7 +62,8 @@ class GameTitleScreen extends StatelessWidget {
               left: 0,
               right: 0,
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 2000),
+                duration:
+                    Durations.sec(2), // const Duration(milliseconds: 2000),
                 width: width,
                 height: 40,
                 child: Center(
@@ -78,7 +80,7 @@ class GameTitleScreen extends StatelessWidget {
             ),
           // 배경 박스
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
+            duration: Durations.ms(500), // const Duration(milliseconds: 500),
             top: dropDowned ? 10 : height * 0.2,
             left: 0,
             right: 0,
@@ -169,12 +171,12 @@ class GameTitleScreen extends StatelessWidget {
           ),
           // 표지
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 500),
+            duration: Durations.ms(500), // const Duration(milliseconds: 500),
             top: height * 0.1,
             left: width * 0.6 / 3 + (selected ? 0 : 40),
             child: AnimatedScale(
               scale: selected ? 1.0 : 0.5,
-              duration: const Duration(milliseconds: 300),
+              duration: Durations.ms(300), // const Duration(milliseconds: 300),
               child: GestureDetector(
                 onTap: () {
                   _openSteamUrl();
