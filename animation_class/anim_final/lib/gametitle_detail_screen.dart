@@ -159,7 +159,7 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
                   ),
                 ),
                 Gaps.v32,
-                if (widget.gameTitle.videoUrl != null)
+                if (widget.gameTitle.videoUrl != null) ...[
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40.0),
                     child: Text(
@@ -169,9 +169,9 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
                           color: Colors.white70, fontWeight: FontWeight.w600),
                     ),
                   ),
-                if (widget.gameTitle.videoUrl != null) Gaps.v16,
-                if (widget.gameTitle.videoUrl != null)
+                  Gaps.v16,
                   buildVideoWidget(context),
+                ],
                 Gaps.v64,
               ],
             ),
