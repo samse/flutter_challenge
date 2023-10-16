@@ -80,7 +80,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return Scaffold(
       body: Stack(
         children: [
-          // 배경 이미지 : 페이지 이동 시 상하 이동 애니매이션
           buildScrollBackgroundImages(context, _size),
           Container(
             width: _size.width,
@@ -96,15 +95,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             onPageChanged: (index) {
               setState(() {
                 _scrolledDown = index == 0;
-                print("_scrolledToDown is $_scrolledDown");
               });
             },
             children: [
               GameTitleDetailScreen(
-                  width: _size.width,
-                  height: _size.height,
-                  gameTitle: gameTitle,
-                  scrolledDown: _scrolledDown),
+                width: _size.width,
+                height: _size.height,
+                gameTitle: gameTitle,
+                scrolledDown: _scrolledDown,
+              ),
               GameTitlesSliderScreen(
                 width: _size.width,
                 height: _size.height,
@@ -120,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 onAddCart: (index) {
                   _cartController.forward(from: 0).whenComplete(
                       () => setState(() => cartCount = cartCount + 1));
-                  // _cartController.animateTo(1.0);
                 },
               ),
             ],
@@ -166,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     return Positioned(
       right: 10,
       top: 60,
-      child: Container(
+      child: SizedBox(
         width: 50,
         height: 50,
         child: Stack(
@@ -191,14 +189,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   child: Text(
                     "$cartCount",
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400),
+                    style: context.cartCountText,
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -222,14 +217,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.blue,
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
                     "1",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400),
+                    style: context.cartCountText,
                   ),
                 ),
               ),

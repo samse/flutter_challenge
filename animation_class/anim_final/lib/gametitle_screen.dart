@@ -36,16 +36,8 @@ class GameTitleScreen extends StatelessWidget {
     }
   }
 
-  // void _launchURL(String url) async {
-  //   if (await canLaunchUrlString(url)) {
-  //     await launchUrlString(url, mode: LaunchMode.externalApplication);
-  //   } else {
-  //     throw 'Could not launch ${gameTitle.steamUrl}';
-  //   }
-  // }
-
   void _onAddCart() {
-    onAddCart(0); // 원래는 아이템의 키를 넘기고자 했음.
+    onAddCart(key);
   }
 
   @override

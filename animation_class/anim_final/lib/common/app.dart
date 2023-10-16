@@ -1,7 +1,5 @@
 import 'package:anim_final/common/sizes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 extension UiExtension on BuildContext {
   void showAlert(
@@ -113,17 +111,6 @@ extension ThemeExtension on BuildContext {
   TextStyle get settingItemText => textTheme.headlineMedium!
       .copyWith(color: Colors.black, fontWeight: FontWeight.w500);
 
-  Container divider(BuildContext context) => Container(
-      width: MediaQuery.of(context).size.width,
-      height: 1,
-      color: Colors.grey.shade300);
-
-  void launchURL(String url) async {
-    print("Url: $url");
-    if (await canLaunchUrlString(url)) {
-      await launchUrlString(url, mode: LaunchMode.externalApplication);
-    } else {
-      throw "열수 없는 url입니다.";
-    }
-  }
+  TextStyle get cartCountText => const TextStyle(
+      color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400);
 }
