@@ -65,92 +65,18 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
             child: Column(
               children: [
                 Gaps.v80,
-                Center(
-                  child: AnimatedRotation(
-                    turns: widget.scrolledDown ? 1.0 : 0.5,
-                    duration:
-                        Durations.ms(300), //const Duration(milliseconds: 300),
-                    child: AnimatedScale(
-                      scale: widget.scrolledDown ? 1.0 : 0.2,
-                      duration:
-                          Durations.ms(800), // const Duration(seconds: 800),
-                      child: Text(
-                        widget.gameTitle.title,
-                        textAlign: TextAlign.center,
-                        style: context.ultraTitle.copyWith(
-                            fontWeight: FontWeight.w600, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
+                buildImageBox(context),
                 Gaps.v12,
-                Text(
-                  "Official Rating",
-                  style: context.headlineMin.copyWith(color: Colors.white),
-                ),
+                Text("Official Rating",
+                    style: context.headlineMin.copyWith(color: Colors.white)),
                 Gaps.v8,
-                RatingBar.builder(
-                  itemSize: 20,
-                  initialRating: widget.gameTitle.rating,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
-                  itemBuilder: (context, _) => const Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
-                  onRatingUpdate: (rating) {
-                    print(rating);
-                  },
-                ),
+                buildRating(context),
                 Gaps.v24,
-                const Divider(
-                  height: 1,
-                  indent: 40,
-                  endIndent: 40,
-                  color: Colors.white38,
-                ),
+                divider(context),
                 Gaps.v24,
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      "assets/images/ps4.png",
-                      width: 120,
-                      height: 80,
-                    ),
-                    Gaps.h24,
-                    Image.asset(
-                      "assets/images/xboxone.png",
-                      width: 120,
-                      height: 80,
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      "assets/images/steam-logo.png",
-                      width: 120,
-                      height: 80,
-                    ),
-                    Gaps.h24,
-                    Image.asset(
-                      "assets/images/geforce_now.png",
-                      width: 120,
-                      height: 80,
-                    )
-                  ],
-                ),
+                ...buildLogos(context),
                 Gaps.v24,
-                const Divider(
-                  height: 1,
-                  indent: 40,
-                  endIndent: 40,
-                  color: Colors.white38,
-                ),
+                divider(context),
                 Gaps.v24,
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -203,6 +129,89 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
             ),
           )
       ],
+    );
+  }
+
+  Widget buildImageBox(BuildContext context) {
+    return Center(
+      child: AnimatedRotation(
+        turns: widget.scrolledDown ? 1.0 : 0.5,
+        duration: Durations.ms(300), //const Duration(milliseconds: 300),
+        child: AnimatedScale(
+          scale: widget.scrolledDown ? 1.0 : 0.2,
+          duration: Durations.ms(800), // const Duration(seconds: 800),
+          child: Text(
+            widget.gameTitle.title,
+            textAlign: TextAlign.center,
+            style: context.ultraTitle
+                .copyWith(fontWeight: FontWeight.w600, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildRating(BuildContext context) {
+    return RatingBar.builder(
+      itemSize: 20,
+      initialRating: widget.gameTitle.rating,
+      minRating: 1,
+      direction: Axis.horizontal,
+      allowHalfRating: true,
+      itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+      itemBuilder: (context, _) => const Icon(
+        Icons.star,
+        color: Colors.amber,
+      ),
+      onRatingUpdate: (rating) {
+        print(rating);
+      },
+    );
+  }
+
+  List<Widget> buildLogos(BuildContext context) {
+    return [
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            "assets/images/ps4.png",
+            width: 120,
+            height: 80,
+          ),
+          Gaps.h24,
+          Image.asset(
+            "assets/images/xboxone.png",
+            width: 120,
+            height: 80,
+          )
+        ],
+      ),
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            "assets/images/steam-logo.png",
+            width: 120,
+            height: 80,
+          ),
+          Gaps.h24,
+          Image.asset(
+            "assets/images/geforce_now.png",
+            width: 120,
+            height: 80,
+          )
+        ],
+      ),
+    ];
+  }
+
+  Widget divider(BuildContext context) {
+    return const Divider(
+      height: 1,
+      indent: 40,
+      endIndent: 40,
+      color: Colors.white38,
     );
   }
 
