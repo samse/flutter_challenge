@@ -41,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late String? prevImageUrl = gameTitle.imageUrl;
   int cartCount = 0;
 
+  /// BGImage fade/position
   late final AnimationController _controller = AnimationController(
       vsync: this,
       duration: Durations.ms(500)); //const Duration(milliseconds: 500));
@@ -48,6 +49,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     parent: _controller,
     curve: Curves.easeIn,
   );
+
+  /// CART animations
   late final AnimationController _cartController = AnimationController(
       vsync: this,
       duration: Durations.sec(1)); //const Duration(milliseconds: 1000));
@@ -68,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _cartController.forward(from: 1.0);
   }
 
+  @override
   void dispose() {
     _controller.dispose();
     _cartController.dispose();
@@ -83,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           // 배경 이미지 : 페이지 이동 시 상하 이동 애니매이션
           buildScrollBackgroundImages(context, _size),
           Container(
+            /// filter
             width: _size.width,
             height: _size.height,
             color: Colors.black.withOpacity(0.2),
@@ -114,13 +119,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   setState(() {
                     prevImageUrl = gameTitle.imageUrl;
                     gameTitle = gameTitles[index];
-                    _controller.forward(from: 0);
+                    // _controller.forward(from: 0);
                   });
                 },
                 onAddCart: (index) {
                   _cartController.forward(from: 0).whenComplete(
                       () => setState(() => cartCount = cartCount + 1));
-                  // _cartController.animateTo(1.0);
                 },
               ),
             ],
