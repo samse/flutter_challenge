@@ -65,7 +65,7 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
             child: Column(
               children: [
                 Gaps.v80,
-                buildImageBox(context),
+                buildTitleText(context),
                 Gaps.v12,
                 Text("Official Rating",
                     style: context.headlineMin.copyWith(color: Colors.white)),
@@ -118,7 +118,7 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
               height: 40,
               child: Center(
                 child: Transform.rotate(
-                  angle: widget.scrolledDown ? 1.55 : -1.55,
+                  angle: 1.55,
                   child: const Icon(
                     Icons.chevron_left,
                     color: Colors.white,
@@ -132,7 +132,7 @@ class _GameTitleDetailScreenState extends State<GameTitleDetailScreen> {
     );
   }
 
-  Widget buildImageBox(BuildContext context) {
+  Widget buildTitleText(BuildContext context) {
     return Center(
       child: AnimatedRotation(
         turns: widget.scrolledDown ? 1.0 : 0.5,

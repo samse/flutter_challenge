@@ -54,10 +54,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late final AnimationController _cartController = AnimationController(
       vsync: this,
       duration: Durations.sec(1)); //const Duration(milliseconds: 1000));
+  // x축 변위
   late final Animation cartAnimX = Tween<double>(
           begin: MediaQuery.of(context).size.width / 2,
           end: MediaQuery.of(context).size.width - 36)
       .animate(_cartController);
+  // y축 변위
   late final Animation cartAnimY =
       Tween<double>(begin: 40, end: MediaQuery.of(context).size.height - 80)
           .animate(_cartController);
@@ -86,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         children: [
           buildScrollBackgroundImages(context, _size),
           Container(
-            /// filter
+            // filter
             width: _size.width,
             height: _size.height,
             color: Colors.black.withOpacity(0.2),
@@ -118,7 +120,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   setState(() {
                     prevImageUrl = gameTitle.imageUrl;
                     gameTitle = gameTitles[index];
-                    // _controller.forward(from: 0);
                   });
                 },
                 onAddCart: (index) {
@@ -128,8 +129,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ),
             ],
           ),
-          buildCartIcon(context),
-          buildCartAnimIcon(context),
+          buildKartIcon(context),
+          buildAnimatedKartIcon(context),
         ],
       ),
     );
@@ -165,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildCartIcon(BuildContext context) {
+  Widget buildKartIcon(BuildContext context) {
     return Positioned(
       right: 10,
       top: 60,
@@ -205,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildCartAnimIcon(BuildContext context) {
+  Widget buildAnimatedKartIcon(BuildContext context) {
     return AnimatedBuilder(
         animation: _cartController,
         builder: (context, child) {
