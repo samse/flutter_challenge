@@ -90,7 +90,7 @@ class GameTitleScreen extends StatelessWidget {
                 child: Stack(children: [
                   Column(
                     children: [
-                      SizedBox(height: 200),
+                      const SizedBox(height: 200),
                       Center(
                         child: Text(
                           "\"${gameTitle.title}\"",

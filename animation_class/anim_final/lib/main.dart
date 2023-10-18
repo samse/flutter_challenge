@@ -120,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   setState(() {
                     prevImageUrl = gameTitle.imageUrl;
                     gameTitle = gameTitles[index];
+                    _controller.forward(from: 0);
                   });
                 },
                 onAddCart: (index) {
