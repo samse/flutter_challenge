@@ -55,15 +55,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       vsync: this,
       duration: Durations.sec(1)); //const Duration(milliseconds: 1000));
   // x축 변위
-  late final Animation cartAnimX = Tween<double>(
+  late final Animation kartAnimX = Tween<double>(
           begin: MediaQuery.of(context).size.width / 2,
           end: MediaQuery.of(context).size.width - 36)
       .animate(_cartController);
   // y축 변위
-  late final Animation cartAnimY =
+  late final Animation kartAnimY =
       Tween<double>(begin: 40, end: MediaQuery.of(context).size.height - 80)
           .animate(_cartController);
-  late final Animation cartOpacity =
+  late final Animation kartOpacity =
       Tween<double>(begin: 1.0, end: 0).animate(_cartController);
 
   @override
@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     _controller.forward(from: 0);
                   });
                 },
-                onAddCart: (index) {
+                onAddKart: (index) {
                   _cartController.forward(from: 0).whenComplete(
                       () => setState(() => cartCount = cartCount + 1));
                 },
@@ -212,10 +212,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         animation: _cartController,
         builder: (context, child) {
           return Positioned(
-            left: cartAnimX.value,
-            bottom: cartAnimY.value,
+            left: kartAnimX.value,
+            bottom: kartAnimY.value,
             child: AnimatedOpacity(
-              opacity: cartOpacity.value,
+              opacity: kartOpacity.value,
               duration: Durations.ms(800), //const Duration(milliseconds: 800),
               child: Container(
                 width: 25,

@@ -10,7 +10,7 @@ class GameTitlesSliderScreen extends StatefulWidget {
   final List<GameTitle> gameTitles;
   final int selectedIndex = 0;
   final Function? onTitleSelected;
-  final Function onAddCart;
+  final Function onAddKart;
   final bool scrolledDown;
   const GameTitlesSliderScreen({
     Key? key,
@@ -18,7 +18,7 @@ class GameTitlesSliderScreen extends StatefulWidget {
     required this.height,
     required this.gameTitles,
     required this.scrolledDown,
-    required this.onAddCart,
+    required this.onAddKart,
     this.onTitleSelected,
   }) : super(key: key);
 
@@ -33,9 +33,6 @@ class _GameTitlesSliderScreenState extends State<GameTitlesSliderScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      // print("${_scrollController.position.pixels}");
-    });
   }
 
   @override
@@ -80,6 +77,6 @@ class _GameTitlesSliderScreenState extends State<GameTitlesSliderScreen> {
         gameTitle: gameTitle,
         selected: selected,
         dropDowned: widget.scrolledDown,
-        onAddCart: widget.onAddCart);
+        onAddCart: widget.onAddKart);
   }
 }
